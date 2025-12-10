@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Functional Kanban & List Task Board</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="main-interface">
+
+        <!-- ========================= -->
+        <!-- TEMPLATES (for JS usage) -->
+        <!-- ========================= -->
+
+        <!-- Kanban Card Template -->
+        <template id="kanban-card-template">
+            <div class="task-card" draggable="true" data-task-id="">
+                <div class="task-priority"></div>
+
+                <div class="task-title-group">
+                    <div class="task-title task-title-text"></div>
+                </div>
+
+                <div class="task-meta task-op-details">
+                    <div class="meta-item dtg-info">
+                        <label>ID:</label>
+                        <span class="dtg-value task-id-text"></span>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- List View Row Template -->
+        <template id="list-row-template">
+            <tr class="list-task-row" data-task-id="">
+                <td class="list-task-id"></td>
+                <td class="list-task-title"></td>
+                <td class="list-task-status"></td>
+                <td class="list-task-dtg"></td>
+                <td>
+                    <span class="priority-badge"></span>
+                </td>
+                <td class="list-task-assignee"></td>
+            </tr>
+        </template>
+
+        <!-- History Item Template -->
+        <template id="history-item-template">
+            <div class="history-item">
+                <span class="timestamp"></span>
+                <span class="action"></span>
+            </div>
+        </template>
+
+        <!-- New Task Attachment Item Template -->
+        <template id="new-task-attachment-item-template">
+            <li class="attachment-item">
+                <span class="file-name"></span>
+                <button type="button" class="remove-file-btn">&times;</button>
+            </li>
+        </template>
+
+        <!-- ========================= -->
+        <!-- HEADER / VIEW TOGGLE     -->
+        <!-- ========================= -->
+
+        <div class="header-bar">
+            <button class="view-toggle-btn active" id="showKanban" data-view="kanban">Kanban View</button>
+            <button class="view-toggle-btn" id="showListView" data-view="list1">List View 1 (In-Route)</button>
+            <button class="view-toggle-btn" id="showListView2" data-view="list2">List View 2 (Transmit/Back Route)</button>
+            <button class="create-task-btn" id="openCreateTaskModal">+ Create Task</button>
+        </div>
+
+        <!-- ========================= -->
+        <!-- KANBAN VIEW               -->
+        <!-- ========================= -->
+
+        <div class="view-container active" id="kanbanView">
+            <div class="kanban-board-container" id="kanbanBoard">
+
+                <!-- Front Route Group -->
+                <div class="workflow-group" data-group="Front-Route">
+                    <h2 class="group-header">Front Route</h2>
+                    <div class="group-columns">
+
+                        <div class="kanban-column" id="column-qmow">
+                            <h3 class="column-header">QMOW <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="qmow"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+
+                        <div class="kanban-column" id="column-swo">
+                            <h3 class="column-header">SWO <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="swo"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+
+                        <div class="kanban-column" id="column-anav">
+                            <h3 class="column-header">ANAV <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="anav"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+
+                        <div class="kanban-column" id="column-reo">
+                            <h3 class="column-header">REO <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="reo"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transmit Group -->
+                <div class="workflow-group" data-group="Transmit">
+                    <h2 class="group-header">Transmit</h2>
+                    <div class="group-columns">
+
+                        <div class="kanban-column" id="column-released">
+                            <h3 class="column-header">Released <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="released"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+
+                        <div class="kanban-column" id="column-qm-xmit">
+                            <h3 class="column-header">QM XMIT <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="qm-xmit"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+
+                        <div class="kanban-column" id="column-swo-xmit">
+                            <h3 class="column-header">SWO XMIT <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="swo-xmit"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+
+                        <div class="kanban-column" id="column-awaiting-ack">
+                            <h3 class="column-header">Awaiting Ack <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="awaiting-ack"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back Route Group -->
+                <div class="workflow-group" data-group="Back-Route">
+                    <h2 class="group-header">Back Route</h2>
+                    <div class="group-columns">
+
+                        <div class="kanban-column" id="column-qm-br">
+                            <h3 class="column-header">QM BR <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="qm-br"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+
+                        <div class="kanban-column" id="column-swo-br">
+                            <h3 class="column-header">SWO BR <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="swo-br"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+
+                        <div class="kanban-column" id="column-anav-br">
+                            <h3 class="column-header">ANAV BR <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="anav-br"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+
+                        <div class="kanban-column" id="column-reo-br">
+                            <h3 class="column-header">REO BR <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="reo-br"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ========================= -->
+        <!-- LIST VIEW 1               -->
+        <!-- ========================= -->
+
+        <div class="view-container" id="listView1" style="display: none;">
+            <div class="list-view-container">
+                <h2>List View: All In-Route Tasks</h2>
+                <table class="task-list-table" id="taskTable">
+                    <thead>
+                        <tr>
+                            <th data-sort-by="id" class="sortable" data-sort-dir="asc">Task ID</th>
+                            <th data-sort-by="title" class="sortable">Unit - Operation</th>
+                            <th data-sort-by="status" class="sortable">Status</th>
+                            <th data-sort-by="dtgDate" class="sortable">DTG</th>
+                            <th data-sort-by="priority" class="sortable">Priority</th>
+                            <th data-sort-by="assignee" class="sortable">Assignee</th>
+                        </tr>
+                    </thead>
+                    <tbody class="list-tbody">
+                        <!-- Populated by JS using list-row-template -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ========================= -->
+        <!-- LIST VIEW 2 (Placeholder) -->
+        <!-- ========================= -->
+
+        <div class="view-container" id="listView2" style="display: none;">
+            <div class="list-view-container">
+                <h2>List View 2: Placeholder for Future Use</h2>
+                <p>This view is ready for your specific Transmit/Back Route logic.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- TASK DETAIL MODAL         -->
+    <!-- ========================= -->
+
+    <div class="task-modal-overlay" id="taskDetailModal">
+        <div class="task-modal-content">
+
+            <div class="modal-header">
+                <h2 class="task-title-edit" id="modal-task-title"></h2>
+                <span class="task-key" id="modal-task-key"></span>
+                <button class="close-modal-btn" data-close-modal="taskDetailModal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="modal-details-col">
+                    <div class="field-section">
+                        <label>Status:</label>
+                        <select class="task-status-dropdown" data-field="status">
+                            <option value="qmow">QMOW</option>
+                            <option value="swo">SWO</option>
+                            <option value="anav">ANAV</option>
+                            <option value="reo">REO</option>
+                            <option value="released">Released</option>
+                            <option value="qm-xmit">QM XMIT</option>
+                            <option value="swo-xmit">SWO XMIT</option>
+                            <option value="awaiting-ack">Awaiting Ack</option>
+                            <option value="qm-br">QM BR</option>
+                            <option value="swo-br">SWO BR</option>
+                            <option value="anav-br">ANAV BR</option>
+                            <option value="reo-br">REO BR</option>
+                        </select>
+                    </div>
+
+                    <div class="field-section">
+                        <label>Description:</label>
+                        <div class="description-area" contenteditable="true" id="modal-description-editable">
+                            <p id="modal-description"></p>
+                        </div>
+                    </div>
+
+                    <div class="activity-section">
+                        <h3>Activity & History</h3>
+                        <textarea class="comment-input" placeholder="Write a comment..."></textarea>
+                        <div class="comment-list" id="modal-history-list">
+                            <!-- History items injected via history-item-template -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-meta-col">
+
+                    <div class="metadata-section" id="modal-metadata-section" data-editing="false">
+                        <div class="metadata-header">
+                            <h3>Metadata</h3>
+                            <button class="edit-metadata-btn">Edit Task Info</button>
+                        </div>
+
+                        <p><strong>Unit:</strong> <span id="modal-unit-name"></span></p>
+                        <p><strong>Operation:</strong> <span id="modal-op-name"></span></p>
+                        <p><strong>DTG:</strong> <span id="modal-dtg"></span></p>
+                        <p><strong>Duration:</strong> <span id="modal-duration"></span></p>
+                        <p><strong>Assignee:</strong> <span id="modal-assignee"></span></p>
+                        <p><strong>Priority:</strong> <span id="modal-priority"></span></p>
+                    </div>
+
+                    <div class="attachments-section">
+                        <h3>Attachments</h3>
+                        <ul class="attachment-list">
+                            <li class="attachment-item editable" data-file-type="txt">
+                                <span class="file-name">Requirements_Draft.txt</span>
+                                <button class="edit-btn" data-file-path="reqs-draft.txt">Edit</button>
+                            </li>
+                        </ul>
+                        <button class="upload-btn">Attach Files</button>
+                    </div>
+
+                    <div class="txt-editor-container hidden" id="txtEditorArea">
+                        <div class="editor-tabs">
+                            <button class="tab-btn active" data-tab="editor">Editor</button>
+                            <button class="tab-btn" data-tab="history">History</button>
+                        </div>
+
+                        <div class="editor-content" id="editor-tab">
+                            <textarea class="txt-file-editor" id="txtContent">
+This is the content of the editable text file. You can edit and save changes here.
+                            </textarea>
+                            <button class="save-file-btn">Save Changes</button>
+                        </div>
+
+                        <div class="editor-content" id="history-tab" style="display: none;">
+                            <h4>Version History</h4>
+                            <ul class="version-list">
+                                <li data-version-id="3">v3 (Current) - Dec 10, 12:00 PM</li>
+                                <li data-version-id="2">
+                                    v2 - Dec 9, 04:30 PM
+                                    <button class="revert-btn">Revert</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================= -->
+    <!-- CREATE TASK MODAL         -->
+    <!-- ========================= -->
+
+    <div class="task-modal-overlay" id="createTaskModal">
+        <div class="task-modal-content">
+
+            <div class="modal-header">
+                <h2 class="task-title-edit">Create New Task (MI-XXX)</h2>
+                <button class="close-modal-btn" data-close-modal="createTaskModal">&times;</button>
+            </div>
+
+            <form id="newTaskForm" class="modal-body create-form">
+                <div class="modal-details-col">
+                    <div class="field-section">
+                        <label for="unitName">Unit Name (e.g., USS Destroyer)</label>
+                        <input type="text" id="unitName" required>
+                    </div>
+
+                    <div class="field-section">
+                        <label for="operationName">Operation Name (e.g., Port Visit)</label>
+                        <input type="text" id="operationName" required>
+                    </div>
+
+                    <div class="field-section">
+                        <label for="description">Detailed Description</label>
+                        <textarea id="description" rows="4" placeholder="Briefly describe the task, requirements, and next steps."></textarea>
+                    </div>
+
+                    <div class="field-section attachment-drop-zone" id="newTaskDropZone">
+                        <label>Attachments (Drag & Drop or Click)</label>
+                        <input type="file" id="newTaskFileSelect" multiple style="display: none;">
+                        <div class="drop-zone-area">
+                            <p>Drag files here or click to browse</p>
+                            <ul id="newTaskAttachmentList">
+                                <!-- New task attachments injected via template -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-meta-col">
+                    <div class="field-section">
+                        <label for="dtg">DTG (DDHHHHZMMMYY)</label>
+                        <input type="text" id="dtg" required placeholder="e.g., 101330Z DEC 25" title="Format: DDHHMMZMMYY (101330Z DEC 25)">
+                        <div class="validation-message" id="dtg-validation-msg"></div>
+                    </div>
+
+                    <div class="field-section">
+                        <label for="opStart">Operation Start (Date/Time)</label>
+                        <input type="datetime-local" id="opStart" required>
+                    </div>
+
+                    <div class="field-section">
+                        <label for="opEnd">Operation End (Date/Time)</label>
+                        <input type="datetime-local" id="opEnd">
+                    </div>
+
+                    <div class="field-section">
+                        <label>Initial Status & Assignee:</label>
+                        <p><strong>Front Route: QMOW (User A)</strong></p>
+                    </div>
+
+                    <button type="submit" class="save-file-btn create-task-submit-btn">Create Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================= -->
+    <!-- JS FILES (OPTION A)       -->
+    <!-- ========================= -->
+
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/priority.js"></script>
+    <script src="js/kanban-render.js"></script>
+    <script src="js/list-render.js"></script>
+    <script src="js/drag-drop.js"></script>
+    <script src="js/modals.js"></script>
+    <script src="js/attachments.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/flowRules.js"></script>
+</body>
+</html>

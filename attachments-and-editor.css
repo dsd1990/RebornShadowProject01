@@ -1,0 +1,71 @@
+/* =====================
+   ATTACHMENTS & EDITOR
+   ===================== */
+
+.attachments-section {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dfe1e6;
+}
+
+.attachment-list {
+    list-style: none;
+    padding: 0;
+}
+
+.attachment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 13px;
+}
+
+/* Text editor for attachments */
+.txt-editor-container {
+    border: 1px solid #dfe1e6;
+    border-radius: 3px;
+    margin-top: 10px;
+}
+
+.editor-tabs {
+    display: flex;
+    border-bottom: 1px solid #dfe1e6;
+}
+
+.tab-btn {
+    padding: 8px 15px;
+    border: none;
+    border-right: 1px solid #dfe1e6;
+    background-color: #f4f5f7;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.1s;
+}
+
+.tab-btn.active {
+    background-color: #ffffff;
+    font-weight: bold;
+}
+
+.txt-file-editor {
+    width: 100%;
+    min-height: 200px;
+    border: none;
+    padding: 10px;
+    box-sizing: border-box;
+    resize: none;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.save-file-btn {
+    padding: 8px 15px;
+    background-color: #0052cc;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin: 10px;
+    float: right;
+}

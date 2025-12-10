@@ -1,0 +1,97 @@
+/* =====================
+   FORMS & DROP ZONES
+   ===================== */
+
+/* New task form base styles */
+.create-form input[type="text"],
+.create-form input[type="datetime-local"],
+.create-form textarea,
+.create-form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #dfe1e6;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+.create-form label {
+    font-weight: bold;
+    color: #5e6c84;
+    display: block;
+    margin-top: 10px;
+}
+
+.create-form p {
+    margin: 5px 0;
+}
+
+.create-task-submit-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Validation message */
+.validation-message {
+    font-size: 12px;
+    margin-top: -5px;
+    margin-bottom: 10px;
+    height: 14px;
+}
+
+/* Attachment drop zone (new task modal) */
+.attachment-drop-zone {
+    margin-top: 15px;
+}
+
+.drop-zone-area {
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.attachment-drop-zone.drag-over-active .drop-zone-area {
+    border-color: #0052cc;
+    background-color: #e0f0ff;
+}
+
+.drop-zone-area p {
+    color: #6b778c;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+#newTaskAttachmentList {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+    text-align: left;
+}
+
+#newTaskAttachmentList .attachment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 8px;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+}
+
+#newTaskAttachmentList .remove-file-btn {
+    background: none;
+    border: none;
+    color: #ff5630;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0 5px;
+}

@@ -1,0 +1,171 @@
+/* =====================
+   KANBAN BOARD STYLES
+   ===================== */
+
+/* Main board container */
+.kanban-board-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-x: auto;
+    align-items: flex-start;
+    height: calc(100vh - 120px);
+    padding-right: 50px;
+}
+
+/* Workflow groups (Front Route / Transmit / Back Route) */
+.workflow-group {
+    width: 100%;
+    flex-shrink: 0;
+    padding: 10px;
+    background-color: #e6e6e6;
+    border-radius: 5px;
+    min-height: 150px;
+    box-sizing: border-box;
+    margin-bottom: 16px;
+}
+
+.group-header {
+    font-size: 18px;
+    font-weight: bold;
+    color: #172b4d;
+    padding: 5px 0;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #ccc;
+    user-select: none;
+    text-align: center;
+}
+
+.group-columns {
+    display: flex;
+    gap: 16px;
+    flex-wrap: nowrap;
+    padding-bottom: 10px;
+}
+
+/* Kanban column */
+.kanban-column {
+    flex-shrink: 0;
+    width: 300px;
+    background-color: #ebecf0;
+    border-radius: 3px;
+    padding: 12px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.column-header {
+    font-size: 16px;
+    font-weight: bold;
+    color: #172b4d;
+    margin: 0 0 12px 0;
+    padding: 4px 0;
+    user-select: none;
+}
+
+.task-count {
+    font-weight: normal;
+    color: #6b778c;
+    margin-left: 5px;
+}
+
+/* Task list (droppable zone) */
+.task-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 4px;
+    min-height: 50px;
+}
+
+.task-list.drag-over {
+    border: 2px dashed #4c9aff;
+    background-color: #e0e0e0;
+    min-height: 50px;
+}
+
+/* Task card */
+.task-card {
+    background-color: #ffffff;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+    padding: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    transition: background-color 0.2s;
+}
+
+.task-card:hover {
+    background-color: #f4f5f7;
+}
+
+/* Primary title */
+.task-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #172b4d;
+}
+
+/* Operational details under the title */
+.task-op-details {
+    font-size: 11px;
+    color: #5e6c84;
+    padding-bottom: 5px;
+    margin-bottom: 0;
+    border-bottom: 1px solid #f4f5f7;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.task-op-details label {
+    font-weight: bold;
+    margin-right: 3px;
+}
+
+/* Priority bar */
+.task-priority {
+    height: 6px;
+    width: 100%;
+    border-radius: 3px;
+    margin-bottom: 5px;
+}
+
+/* Short Notice (Red) */
+.task-priority.high {
+    background-color: #ff5630;
+}
+
+/* No Action Taken (Orange) */
+.task-priority.medium {
+    background-color: #ff991f;
+}
+
+/* Routine (Low) – subtle / neutral */
+.task-priority.low {
+    background-color: transparent;
+    height: 2px;
+    margin-bottom: 0;
+}
+
+/* "Add card" button */
+.add-task-btn {
+    margin-top: 8px;
+    padding: 8px;
+    width: 100%;
+    background: none;
+    border: none;
+    color: #5e6c84;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+.add-task-btn:hover {
+    background-color: rgba(9, 30, 66, 0.08);
+    color: #172b4d;
+}

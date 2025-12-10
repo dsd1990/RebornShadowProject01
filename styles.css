@@ -1,0 +1,7 @@
+/* Master stylesheet that imports all namespaced CSS files */
+@import url('global.css');
+@import url('kanban.css');
+@import url('list-view.css');
+@import url('modal-and-metadata.css');
+@import url('attachments-and-editor.css');
+@import url('forms-and-dropzone.css');

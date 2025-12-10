@@ -1,0 +1,44 @@
+/* =====================
+   GLOBAL & LAYOUT STYLES
+   ===================== */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f5f7;
+    margin: 0;
+    padding: 20px;
+}
+
+.main-interface {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* Global header / view toggle */
+.header-bar {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #dfe1e6;
+}
+
+.view-toggle-btn,
+.create-task-btn {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+.view-toggle-btn.active {
+    background-color: #0052cc;
+    color: white;
+    border-color: #0052cc;
+}
+
+/* Container for any view (Kanban/List) */
+.view-container {
+    padding: 10px 0;
+}
