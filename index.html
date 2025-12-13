@@ -173,6 +173,38 @@
                     </div>
                 </div>
 
+                <!-- Lifecycle Group -->
+                <div class="workflow-group" data-group="Lifecycle">
+                    <h2 class="group-header">Lifecycle</h2>
+                    <div class="group-columns">
+
+                        <div class="kanban-column" id="column-approved">
+                            <h3 class="column-header">Approved <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="approved"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+
+                        <div class="kanban-column" id="column-active">
+                            <h3 class="column-header">Active <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="active"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+
+                        <div class="kanban-column" id="column-wasp-deletions">
+                            <h3 class="column-header">WASP Deletions <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="wasp-deletions"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+
+                        <div class="kanban-column" id="column-filed">
+                            <h3 class="column-header">Filed <span class="task-count">(0)</span></h3>
+                            <div class="task-list" data-status="filed"></div>
+                            <button class="add-task-btn">+ Add Card</button>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -245,6 +277,10 @@
                             <option value="swo-br">SWO BR</option>
                             <option value="anav-br">ANAV BR</option>
                             <option value="reo-br">REO BR</option>
+                            <option value="approved">Approved</option>
+                            <option value="active">Active</option>
+                            <option value="wasp-deletions">WASP Deletions</option>
+                            <option value="filed">Filed</option>
                         </select>
                     </div>
 
@@ -364,8 +400,8 @@ This is the content of the editable text file. You can edit and save changes her
 
                 <div class="modal-meta-col">
                     <div class="field-section">
-                        <label for="dtg">DTG (DDHHHHZMMMYY)</label>
-                        <input type="text" id="dtg" required placeholder="e.g., 101330Z DEC 25" title="Format: DDHHMMZMMYY (101330Z DEC 25)">
+                        <label for="dtg">DTG (DDHHMMZMMMYY)</label>
+                        <input type="text" id="dtg" required placeholder="e.g., 101330Z DEC 25" title="Format: DDHHMMZMMMYY (e.g., 101330Z DEC 25)">
                         <div class="validation-message" id="dtg-validation-msg"></div>
                     </div>
 

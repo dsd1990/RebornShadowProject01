@@ -85,6 +85,17 @@
     min-height: 50px;
 }
 
+/* Drag/drop flow hints */
+.task-list.drop-allowed {
+    outline: 2px solid #36b37e;
+    outline-offset: 2px;
+    background-color: #e3fcef;
+}
+
+.task-list.drop-disallowed {
+    opacity: 0.55;
+}
+
 /* Task card */
 .task-card {
     background-color: #ffffff;

@@ -1,31 +1,24 @@
 // flowRules.js
-// Priority, allowed transitions, and lifecycle logic
+// Allowed transitions, automatic follow-on behavior, and lifecycle logic
 
-function calculatePriority(task) {
-    const now = Date.now();
-    const opStart = task.opStartISO ? new Date(task.opStartISO).getTime() : null;
-    const timeToStart = opStart ? opStart - now : null;
-    const timeSinceCreation = task.creationTime ? now - new Date(task.creationTime).getTime() : 0;
-    const seventyTwoHours = 72 * 60 * 60 * 1000;
+/**
+ * Map a status to its workflow group label.
+ * (Used for display + future filtering.)
+ */
+function getGroupForStatus(status) {
+    const frontRoute = typeof FRONT_ROUTE_STATUSES !== "undefined"
+        ? FRONT_ROUTE_STATUSES
+        : ["qmow", "swo", "anav", "reo"];
 
-    // Short Notice: within 72 hours of start
-    if (opStart && timeToStart < seventyTwoHours && timeToStart > 0) {
-        return 'ShortNotice';
-    }
+    const transmit = ["released", "qm-xmit", "swo-xmit", "awaiting-ack"];
+    const backRoute = ["qm-br", "swo-br", "anav-br", "reo-br"];
+    const lifecycle = ["approved", "active", "wasp-deletions", "filed"];
 
-    // No Action Taken: still in Front Route after 72 hours since creation
-    if (FRONT_ROUTE_STATUSES.includes(task.status) && timeSinceCreation > seventyTwoHours) {
-        return 'NoActionTaken';
-    }
-
-    // Routine
-    return 'Routine';
-}
-
-function getPriorityClass(calculatedPriority) {
-    if (calculatedPriority === 'ShortNotice') return 'high';
-    if (calculatedPriority === 'NoActionTaken') return 'medium';
-    return 'low';
+    if (frontRoute.includes(status)) return "Front-Route";
+    if (transmit.includes(status)) return "Transmit-Section";
+    if (backRoute.includes(status)) return "Back-Route";
+    if (lifecycle.includes(status)) return "Lifecycle";
+    return "Unknown";
 }
 
 /**
@@ -39,43 +32,43 @@ function isTransitionAllowed(task, fromStatus, toStatus) {
 
     switch (fromStatus) {
         // Front Route
-        case 'qmow':
-            return ['anav', 'swo'].includes(toStatus);
-        case 'anav':
-            return ['qmow', 'swo', 'reo'].includes(toStatus);
-        case 'swo':
-            return ['qmow', 'anav', 'reo'].includes(toStatus);
-        case 'reo':
+        case "qmow":
+            return ["anav", "swo"].includes(toStatus);
+        case "anav":
+            return ["swo", "reo"].includes(toStatus);
+        case "swo":
+            return ["anav", "reo"].includes(toStatus);
+        case "reo":
             // Back to QMOW or into Transmit: Released
-            return ['qmow', 'released'].includes(toStatus);
+            return ["qmow", "released"].includes(toStatus);
 
         // Transmit
-        case 'released':
-            return toStatus === 'qm-xmit';
-        case 'qm-xmit':
-            return toStatus === 'swo-xmit';
-        case 'swo-xmit':
-            return toStatus === 'awaiting-ack';
-        case 'awaiting-ack':
-            return toStatus === 'qm-br';
+        case "released":
+            return toStatus === "qm-xmit";
+        case "qm-xmit":
+            return toStatus === "swo-xmit";
+        case "swo-xmit":
+            return toStatus === "awaiting-ack";
+        case "awaiting-ack":
+            return toStatus === "qm-br";
 
         // Back Route
-        case 'qm-br':
-            return toStatus === 'swo-br';
-        case 'swo-br':
+        case "qm-br":
+            return toStatus === "swo-br";
+        case "swo-br":
             // If full Back Route not required, completion is automatic (no manual transition)
-            if (fullBR) return toStatus === 'anav-br';
+            if (fullBR) return toStatus === "anav-br";
             return false;
-        case 'anav-br':
-            return fullBR && toStatus === 'reo-br';
-        case 'reo-br':
+        case "anav-br":
+            return fullBR && toStatus === "reo-br";
+        case "reo-br":
             // Completion triggers automatic move; no manual destination from here
             return false;
 
         // Lifecycle
-        case 'wasp-deletions':
+        case "wasp-deletions":
             // Manual move to Filed
-            return toStatus === 'filed';
+            return toStatus === "filed";
 
         default:
             return false;
@@ -91,9 +84,9 @@ function determineLifecycleStatus(task) {
     const start = task.opStartISO ? new Date(task.opStartISO).getTime() : null;
     const end = task.opEndISO ? new Date(task.opEndISO).getTime() : null;
 
-    if (start && now < start) return 'approved';
-    if (start && (!end || now <= end)) return 'active';
-    return 'wasp-deletions';
+    if (start && now < start) return "approved";
+    if (start && (!end || now <= end)) return "active";
+    return "wasp-deletions";
 }
 
 function handleBackRouteCompletion(task, completionStatus) {
@@ -120,10 +113,10 @@ function handlePostStatusTransition(task, oldStatus, newStatus) {
     task.group = getGroupForStatus(newStatus);
 
     // If we arrived into a BR status, check if that completes the Back Route
-    if (newStatus === 'swo-br' && !task.backRouteFullRequired) {
+    if (newStatus === "swo-br" && !task.backRouteFullRequired) {
         // Back Route ends at SWO BR (no ANAV/REO BR required)
         handleBackRouteCompletion(task, newStatus);
-    } else if (newStatus === 'reo-br' && task.backRouteFullRequired) {
+    } else if (newStatus === "reo-br" && task.backRouteFullRequired) {
         // Full Back Route path required; completion at REO BR
         handleBackRouteCompletion(task, newStatus);
     }
@@ -145,7 +138,7 @@ function applyStatusChange(task, newStatus, options = {}) {
     task.group = getGroupForStatus(newStatus);
     task.timeInCurrentStatus = nowIso;
 
-    const actor = options.actor || 'User A';
+    const actor = options.actor || "User A";
     const reason =
         options.reason ||
         `Status changed from ${oldStatus.toUpperCase()} to ${newStatus.toUpperCase()} by ${actor}.`;
@@ -160,11 +153,11 @@ function applyStatusChange(task, newStatus, options = {}) {
 
 /**
  * Periodic lifecycle enforcement for Approved/Active tasks.
- * Call this before rendering Kanban/List views.
+ * Call this before rendering Kanban/List views if desired.
  */
 function enforceLifecycleAutoMoves() {
     ALL_TASKS.forEach(task => {
-        if (!['approved', 'active'].includes(task.status)) return;
+        if (!["approved", "active"].includes(task.status)) return;
 
         const desired = determineLifecycleStatus(task);
         if (desired === task.status) return;

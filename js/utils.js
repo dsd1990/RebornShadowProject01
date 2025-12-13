@@ -17,7 +17,8 @@ const MONTH_MAP = {
 };
 
 /**
- * Validates the DTG string (DDHHMMZMMYY) and converts it into a Date object (UTC).
+ * Validates the DTG string (DDHHMMZMMMYY) and converts it into a Date object (UTC).
+ * Accepts optional spaces (e.g., "101330Z DEC 25" or "101330ZDEC25").
  * Returns null if invalid.
  */
 function validateAndConvertDTG(dtgString) {

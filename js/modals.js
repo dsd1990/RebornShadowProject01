@@ -157,6 +157,9 @@ function renderTaskHistory(task) {
 
     historyListEl.innerHTML = "";
 
+    // Defensive: tasks created/loaded without history should still render safely
+    if (!Array.isArray(task.history)) task.history = [];
+
     const sortedHistory = [...task.history].sort(
         (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
     );
@@ -197,12 +200,28 @@ function handleStatusChange(e) {
 
     if (oldStatus === newStatus) return;
 
-    task.status = newStatus;
-    task.timeInCurrentStatus = new Date().toISOString();
-    task.history.push({
-        timestamp: new Date().toISOString(),
-        action: `Status manually changed from ${oldStatus.toUpperCase()} to ${newStatus.toUpperCase()} by User A.`
+    // Enforce workflow rules via flowRules.js
+    if (typeof applyStatusChange !== "function") {
+        console.warn("applyStatusChange() is not available. Status change aborted.");
+        e.target.value = oldStatus;
+        alert("Workflow engine not loaded. Please refresh and try again.");
+        return;
+    }
+
+    const ok = applyStatusChange(task, newStatus, {
+        actor: "User A",
+        reason: `Status manually changed from ${oldStatus.toUpperCase()} to ${newStatus.toUpperCase()} by User A (Modal Dropdown).`
     });
+
+    if (!ok) {
+        // Revert the dropdown to reflect the actual task status
+        e.target.value = oldStatus;
+        alert("That move is not allowed by the workflow rules.");
+        return;
+    }
+
+    // In case post-transition hooks auto-advanced the task (e.g., BR completion), sync dropdown
+    e.target.value = task.status;
 
     renderKanbanBoard();
     sortAndRenderList();
@@ -309,7 +328,7 @@ function handleNewTaskSubmit(e) {
     if (!dtgDate) {
         if (validationMsg) {
             validationMsg.textContent =
-                "Invalid DTG format. Must be DDHHMMZMMYY (e.g., 101330Z DEC 25)";
+                "Invalid DTG format. Must be DDHHMMZMMMYY (e.g., 101330Z DEC 25)";
             validationMsg.style.color = "red";
         }
         return;

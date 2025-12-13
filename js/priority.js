@@ -8,12 +8,12 @@
  */
 function calculatePriority(task) {
     const now = Date.now();
-    const opStart = new Date(task.opStartISO).getTime();
-    const timeToStart = opStart - now;
-    const timeSinceCreation = now - new Date(task.creationTime).getTime();
+    const opStart = task.opStartISO ? new Date(task.opStartISO).getTime() : null;
+    const timeToStart = opStart ? opStart - now : null;
+    const timeSinceCreation = task.creationTime ? now - new Date(task.creationTime).getTime() : 0;
     const seventyTwoHours = 72 * 60 * 60 * 1000;
 
-    if (timeToStart < seventyTwoHours && timeToStart > 0) {
+    if (opStart && timeToStart < seventyTwoHours && timeToStart > 0) {
         return "ShortNotice";
     }
 
