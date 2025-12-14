@@ -191,3 +191,103 @@ Include:
 - Persistence (localStorage vs export/import JSON bundle)
 - Attachment persistence (metadata-only vs embedded TXT vs base64 bundle)
 - Replace blocking alerts with non-blocking toast UI
+
+Board Terminology Dictionary
+App-level
+
+App Shell: The full page wrapper (header + view + modals).
+
+Top Bar / Header Bar: The bar across the top with + Create Task, view toggle, etc.
+
+Primary Action Button: + Create Task (the only create entrypoint).
+
+View Toggle: The control that switches Kanban View ↔ List View.
+
+View Container: The area below the header where Kanban/List renders.
+
+Views
+
+Kanban View: The board layout with columns.
+
+List View: The table/list layout with sortable columns.
+
+Kanban structure
+
+Board: The entire Kanban grid.
+
+Column: One vertical section representing a single status.
+
+Column Header: The top row of the column (status name + counts if you add them).
+
+Column Body / Dropzone: The area inside the column where cards live and where drops occur.
+
+Status Column: A column tied to one status value (ex: QMOW, ANAV, etc.).
+
+Swimlane (optional future term): A horizontal grouping across columns (ex: by group or lifecycle). Only use if we add lanes.
+
+Cards & card content
+
+Task Card / Card: A draggable item representing one task.
+
+Card Face: The collapsed/default info shown on the card in the column.
+
+Card Metadata Row: A labeled row on the card face (ex: “DTG: …”).
+
+Card Title Line: The top line on the card face — you want this as Unit – Operation.
+
+Card Fields (Face Fields): The set of fields displayed on the card face:
+
+Unit – Operation
+
+DTG
+
+Operation Time Period
+
+Card Footer: Bottom area of the card face (often used for tags/priority/assignee).
+
+Card Badges: Small chips/pills on the card (priority label, tags, etc.).
+
+Task details (expanded)
+
+Task Modal / Task Detail Modal: The popup when you open a task.
+
+Expanded View: The full task detail inside the modal.
+
+Task ID: The unique identifier (hidden on card face, visible in modal).
+
+Task History Panel: The section that lists status/updates over time.
+
+Task Fields / Task Properties: All stored properties (title, dtg, op window, priority, etc.).
+
+Status, flow, and routing terminology
+
+Status: The current state of a task (maps 1:1 to a column).
+Transition / Move: Changing status from one column to another.
+Allowed Transition: A move permitted by flow rules.
+Blocked Transition: A move not permitted by flow rules.
+Workflow Rules / Flow Rules: The logic defining allowed transitions.
+Routing Path: A specific sequence of statuses (ex: “Front Route path”).
+Front Route: Your main operational routing statuses (QMOW → ANAV/SWO → REO → …).
+Back Route: Secondary routing statuses (your BR completion logic).
+Transmit Section: The final route step(s) for release/transmit.
+Lifecycle Status: A “phase” state like Approved / Active / Complete (if you’re using those columns).
+Group: The high-level category (Front Route / Transmit / Back Route / Lifecycle).
+Drag/drop UX terminology
+Drag Handle: The area of the card you grab (right now: the card itself).
+Pickup: The moment dragging starts.
+Drop Target: A column/body that can accept a card.
+Allowed Drop Highlighting: The visual highlight on columns you’re allowed to drop into.
+Disallowed Drop Dimming: The visual dim on columns you cannot drop into.
+Drag-Over State: The hover styling when you’re over a drop target.
+Creation & editing
+Create Task Modal: The modal used when pressing + Create Task.
+Create Form: The form fields inside that modal.
+Edit Fields: Changes made in the Task Detail Modal.
+Attachments & notes
+Attachments Panel: Where attached filenames/items appear.
+TXT Editor / Notes Editor: The text editing area for task notes (if used).
+Attachment Item: One file entry in the attachments list.
+Data & persistence (for later)
+App State: All tasks + settings needed to restore the board.
+Snapshot / Export: A saved JSON bundle of the app state (future).
+Import: Loading a snapshot into the app (future).
