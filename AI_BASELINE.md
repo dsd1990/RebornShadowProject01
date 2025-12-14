@@ -177,6 +177,16 @@ Include:
 
 ---
 
+## Planned refinement of current features
+- Remove +Add Card button from Kanban View for all sections. The only way to add a new card should be the +Create Task button at the top of the page. 
+- Discuss with AI how to best define forward moving logic within flowRules.js. Specifically touching on if an item moves "backwards" in routing that the user moving that task has a pop up text box requring them to annotate why it is being moved backwards. This comment will get logged in the history array. 
+- Lets define some of our boards terms so you and i are using the same terminology going forward regarding which aspects of the board i want manipulated. Please provide your recommended name for every aspect of the board.
+- Kanban task cards need to show the following information defaultly on each card face. Unit - Operation, DTG, Operation Time Period. The ID does not need to be shown and can remain visible within the card when it is expanded. 
+- Kanban Time Based indication refinement. 
+  - When a task is in Front Route i think the current flowRules.js may be more properly suited to be only for that section. Open to your ideas. When a package gets to Transmit it falls under a different timeline that requires a person to get the message out to units that require it in a timely fashion so time based alerts may be better for this seciton. Is there a way to have a persistent stopwatch like feature that shows how long a package has been in the Transmit Section and that be visible on the task card while in that section? This would also be logged in the history array. 
+
+---
+
 ## Planned next gaps (roadmap)
 - Persistence (localStorage vs export/import JSON bundle)
 - Attachment persistence (metadata-only vs embedded TXT vs base64 bundle)
