@@ -161,6 +161,68 @@ Same structure, but replace `main` with the SHA.
 
 ---
 
+## Shared Terminology (Board Vocabulary)
+These terms are used as the canonical language for requests. When I ask for changes, I will reference these names.
+
+### App-level
+- **App Shell**: Entire page (header + view container + modals)
+- **Top Bar / Header Bar**: The top row containing primary controls
+- **Primary Action Button**: “+ Create Task”
+- **View Toggle**: Kanban View ↔ List View control
+- **View Container**: The area where the active view renders
+
+### Views
+- **Kanban View**: Column-based board view
+- **List View**: Table/list-based view
+
+### Kanban structure
+- **Board**: The full kanban grid
+- **Column (Status Column)**: One vertical section representing a single **Status**
+- **Column Header**: The title area of a column
+- **Column Body / Dropzone**: The area where cards live + drop targets
+
+### Cards
+- **Task Card / Card**: A draggable item representing one task
+- **Card Face**: The default/collapsed content visible on the board
+- **Card Face Fields**: Fields shown on the card face (currently: Unit–Operation, DTG, Operation Time Period)
+- **Card Badge**: Small pill/label on a card (priority, tags, etc.)
+
+### Task details (expanded)
+- **Task Detail Modal / Task Modal**: Popup with full task details
+- **Expanded View**: Content inside the modal
+- **Task ID**: Unique identifier (hidden on card face; visible in modal)
+
+### Flow / Routing
+- **Status**: The current state of a task; maps 1:1 to a column
+- **Transition / Move**: Change from one status to another
+- **Allowed Transition**: Move permitted by flow rules
+- **Blocked Transition**: Move rejected by flow rules
+- **Flow Rules / Workflow Rules**: Logic that defines allowed transitions
+- **Routing Path**: A sequence of statuses a task follows
+- **Front Route**: Main operational flow path (QMOW → ANAV/SWO → REO → …)
+- **Back Route**: Secondary path (if used)
+- **Transmit Section**: Final release/transmit path (if used)
+- **Lifecycle Status**: Approved/Active/Complete-type statuses (if used)
+- **Group**: High-level category (Front Route / Back Route / Transmit / Lifecycle)
+
+### Drag/drop UX
+- **Pickup**: Drag start
+- **Drop Target**: A column body that can accept drops
+- **Allowed Drop Highlighting**: Visual cue showing valid drop targets
+- **Disallowed Drop Dimming**: Visual cue showing invalid targets
+- **Drag-Over State**: Hover styling when over a target
+
+### Creation & editing
+- **Create Task Modal**: Modal opened by “+ Create Task”
+- **Create Form**: Fields inside create modal
+- **Edit Fields**: Edits made within the Task Detail Modal
+
+### Attachments / Notes
+- **Attachments Panel**: Area listing attachments
+- **Attachment Item**: One attachment entry
+- **TXT Editor / Notes Editor**: Text area for notes (if used)
+
+
 ## How to request work from the AI
 Include:
 - **Goal**
