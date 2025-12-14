@@ -5,6 +5,44 @@ Offline-capable Jira-style task tracker (Kanban + List View) with enforced flow 
 
 ---
 
+## Change Control (IMPORTANT)
+AI_BASELINE is a roadmap and rulebook. It does **NOT** authorize automatic implementation.
+
+### No-code-change rule
+The AI must **NOT** modify code or generate patch files unless:
+1) We discuss the change in chat first, **AND**
+2) I explicitly approve with one of these phrases:
+   - "Proceed with code changes"
+   - "Make the patch"
+   - "Generate updated files"
+   - "Implement this now"
+
+If I have not explicitly approved, the AI may only:
+- analyze current behavior
+- explain likely causes
+- propose options with pros/cons
+- provide a plan or checklist
+- ask targeted questions (if needed)
+
+### Safety rule: don’t break working features
+When proposing a change, the AI must identify:
+- what files will be touched
+- expected behavior change (if any)
+- risk of regression
+- rollback plan
+
+Additionally:
+- If a feature is currently working, the default approach is **minimal, localized change**.
+- No refactors “while we’re here” unless explicitly approved.
+
+### Patch workflow (preferred)
+When approved:
+- AI produces a patch limited to the agreed files
+- AI lists EXACTLY what changed (bullet list)
+- AI states how to test the change (quick steps)
+
+---
+
 ## Canonical branch + what “latest” means
 - **Canonical branch:** `main`
 - **Latest baseline:** HEAD of `main` unless you explicitly tell me to use a tag or commit SHA.
@@ -22,59 +60,59 @@ Run offline by opening `index.html` in a browser.
 ---
 
 ## Raw Link Index (preferred for AI syncing)
-GitHub’s normal UI pages can fail to load in some environments. The raw links below are the authoritative way for me to fetch the latest files.
+GitHub’s normal UI pages can fail to load in some environments. The raw links below are the authoritative way for the AI to fetch the latest files.
 
-### Base raw URL
-`https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/`
+### Base raw URL (main)
+https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/
 
 ### Entry
-- `index.html`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/index.html
+- index.html  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/index.html
 
 ### JavaScript (js/)
-- `js/main.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/main.js
-- `js/data.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/data.js
-- `js/flowRules.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/flowRules.js
-- `js/drag-drop.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/drag-drop.js
-- `js/modals.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/modals.js
-- `js/kanban-render.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/kanban-render.js
-- `js/list-render.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/list-render.js
-- `js/attachments.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/attachments.js
-- `js/priority.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/priority.js
-- `js/utils.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/utils.js
+- js/main.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/main.js
+- js/data.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/data.js
+- js/flowRules.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/flowRules.js
+- js/drag-drop.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/drag-drop.js
+- js/modals.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/modals.js
+- js/kanban-render.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/kanban-render.js
+- js/list-render.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/list-render.js
+- js/attachments.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/attachments.js
+- js/priority.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/priority.js
+- js/utils.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/utils.js
 
 ### CSS (css/)
-- `css/styles.css`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/styles.css
-- `css/global.css`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/global.css
-- `css/kanban.css`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/kanban.css
-- `css/list-view.css`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/list-view.css
-- `css/modal-and-metadata.css`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/modal-and-metadata.css
-- `css/forms-and-dropzone.css`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/forms-and-dropzone.css
-- `css/attachments-and-editor.css`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/attachments-and-editor.css
+- css/styles.css  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/styles.css
+- css/global.css  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/global.css
+- css/kanban.css  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/kanban.css
+- css/list-view.css  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/list-view.css
+- css/modal-and-metadata.css  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/modal-and-metadata.css
+- css/forms-and-dropzone.css  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/forms-and-dropzone.css
+- css/attachments-and-editor.css  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/attachments-and-editor.css
 
 ---
 
 ## Pinning a specific commit (when you want zero ambiguity)
-If you want me to work off an exact commit, send me the commit SHA and I’ll use raw links like:
+If you want the AI to work off an exact commit, send the commit SHA and the AI will use raw links like:
 
-`https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/<COMMIT_SHA>/js/flowRules.js`
+https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/<COMMIT_SHA>/js/flowRules.js
 
 Same structure, but replace `main` with the SHA.
 
@@ -136,6 +174,16 @@ Include:
   - `fix: ...`
   - `refactor: ...`
 - If flow behavior changes, say so in the commit message.
+
+---
+
+## Planned refinement of current features
+- Remove +Add Card button from Kanban View for all sections. The only way to add a new card should be the +Create Task button at the top of the page. 
+- Discuss with AI how to best define forward moving logic within flowRules.js. Specifically touching on if an item moves "backwards" in routing that the user moving that task has a pop up text box requring them to annotate why it is being moved backwards. This comment will get logged in the history array. 
+- Lets define some of our boards terms so you and i are using the same terminology going forward regarding which aspects of the board i want manipulated. Please provide your recommended name for every aspect of the board.
+- Kanban task cards need to show the following information defaultly on each card face. Unit - Operation, DTG, Operation Time Period. The ID does not need to be shown and can remain visible within the card when it is expanded. 
+- Kanban Time Based indication refinement. 
+  - When a task is in Front Route i think the current flowRules.js may be more properly suited to be only for that section. Open to your ideas. When a package gets to Transmit it falls under a different timeline that requires a person to get the message out to units that require it in a timely fashion so time based alerts may be better for this seciton. Is there a way to have a persistent stopwatch like feature that shows how long a package has been in the Transmit Section and that be visible on the task card while in that section? This would also be logged in the history array. 
 
 ---
 
