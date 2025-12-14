@@ -5,11 +5,11 @@ Offline-capable Jira-style task tracker (Kanban + List View) with enforced flow 
 
 ---
 
-## Change Control (IMPORTANT)
+## Change Control
 AI_BASELINE is a roadmap and rulebook. It does **NOT** authorize automatic implementation.
 
 ### No-code-change rule
-The AI must **NOT** modify code or generate patch files unless:
+The AI must **NOT** modify code or propose patch files unless:
 1) We discuss the change in chat first, **AND**
 2) I explicitly approve with one of these phrases:
    - "Proceed with code changes"
@@ -24,16 +24,19 @@ If I have not explicitly approved, the AI may only:
 - provide a plan or checklist
 - ask targeted questions (if needed)
 
+### Output gating rule
+Even after we discuss a change, the AI must **NOT** generate or output updated code files/patches unless I explicitly say:
+- "Generate updated files"
+(or one of the approval phrases above)
+
+Until then, the AI may only provide analysis, options, and a proposed implementation plan.
+
 ### Safety rule: don’t break working features
 When proposing a change, the AI must identify:
 - what files will be touched
 - expected behavior change (if any)
 - risk of regression
 - rollback plan
-
-Additionally:
-- If a feature is currently working, the default approach is **minimal, localized change**.
-- No refactors “while we’re here” unless explicitly approved.
 
 ### Patch workflow (preferred)
 When approved:
@@ -50,7 +53,7 @@ When approved:
 
 ---
 
-## Repo structure (source of truth)
+## Repo structure
 - `index.html` (entrypoint)
 - `js/` (all JavaScript)
 - `css/` (all CSS)
@@ -63,53 +66,53 @@ Run offline by opening `index.html` in a browser.
 GitHub’s normal UI pages can fail to load in some environments. The raw links below are the authoritative way for the AI to fetch the latest files.
 
 ### Base raw URL (main)
-https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/
+`https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/`
 
 ### Entry
-- index.html  
+- `index.html`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/index.html
 
 ### JavaScript (js/)
-- js/main.js  
+- `js/main.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/main.js
-- js/data.js  
+- `js/data.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/data.js
-- js/flowRules.js  
+- `js/flowRules.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/flowRules.js
-- js/drag-drop.js  
+- `js/drag-drop.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/drag-drop.js
-- js/modals.js  
+- `js/modals.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/modals.js
-- js/kanban-render.js  
+- `js/kanban-render.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/kanban-render.js
-- js/list-render.js  
+- `js/list-render.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/list-render.js
-- js/attachments.js  
+- `js/attachments.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/attachments.js
-- js/priority.js  
+- `js/priority.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/priority.js
-- js/utils.js  
+- `js/utils.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/utils.js
 
 ### CSS (css/)
-- css/styles.css  
+- `css/styles.css`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/styles.css
-- css/global.css  
+- `css/global.css`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/global.css
-- css/kanban.css  
+- `css/kanban.css`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/kanban.css
-- css/list-view.css  
+- `css/list-view.css`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/list-view.css
-- css/modal-and-metadata.css  
+- `css/modal-and-metadata.css`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/modal-and-metadata.css
-- css/forms-and-dropzone.css  
+- `css/forms-and-dropzone.css`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/forms-and-dropzone.css
-- css/attachments-and-editor.css  
+- `css/attachments-and-editor.css`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/attachments-and-editor.css
 
 ---
 
-## Pinning a specific commit (when you want zero ambiguity)
+## Pinning a specific commit (zero ambiguity)
 If you want the AI to work off an exact commit, send the commit SHA and the AI will use raw links like:
 
 https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/<COMMIT_SHA>/js/flowRules.js
@@ -158,7 +161,7 @@ Same structure, but replace `main` with the SHA.
 
 ---
 
-## How to request work from the AI (format)
+## How to request work from the AI
 Include:
 - **Goal**
 - **Constraints** (offline-only, no libs, etc.)
@@ -177,117 +180,7 @@ Include:
 
 ---
 
-## Planned refinement of current features
-- Remove +Add Card button from Kanban View for all sections. The only way to add a new card should be the +Create Task button at the top of the page. 
-- Discuss with AI how to best define forward moving logic within flowRules.js. Specifically touching on if an item moves "backwards" in routing that the user moving that task has a pop up text box requring them to annotate why it is being moved backwards. This comment will get logged in the history array. 
-- Lets define some of our boards terms so you and i are using the same terminology going forward regarding which aspects of the board i want manipulated. Please provide your recommended name for every aspect of the board.
-- Kanban task cards need to show the following information defaultly on each card face. Unit - Operation, DTG, Operation Time Period. The ID does not need to be shown and can remain visible within the card when it is expanded. 
-- Kanban Time Based indication refinement. 
-  - When a task is in Front Route i think the current flowRules.js may be more properly suited to be only for that section. Open to your ideas. When a package gets to Transmit it falls under a different timeline that requires a person to get the message out to units that require it in a timely fashion so time based alerts may be better for this seciton. Is there a way to have a persistent stopwatch like feature that shows how long a package has been in the Transmit Section and that be visible on the task card while in that section? This would also be logged in the history array. 
-
----
-
 ## Planned next gaps (roadmap)
 - Persistence (localStorage vs export/import JSON bundle)
 - Attachment persistence (metadata-only vs embedded TXT vs base64 bundle)
 - Replace blocking alerts with non-blocking toast UI
-
-Board Terminology Dictionary
-App-level
-
-App Shell: The full page wrapper (header + view + modals).
-
-Top Bar / Header Bar: The bar across the top with + Create Task, view toggle, etc.
-
-Primary Action Button: + Create Task (the only create entrypoint).
-
-View Toggle: The control that switches Kanban View ↔ List View.
-
-View Container: The area below the header where Kanban/List renders.
-
-Views
-
-Kanban View: The board layout with columns.
-
-List View: The table/list layout with sortable columns.
-
-Kanban structure
-
-Board: The entire Kanban grid.
-
-Column: One vertical section representing a single status.
-
-Column Header: The top row of the column (status name + counts if you add them).
-
-Column Body / Dropzone: The area inside the column where cards live and where drops occur.
-
-Status Column: A column tied to one status value (ex: QMOW, ANAV, etc.).
-
-Swimlane (optional future term): A horizontal grouping across columns (ex: by group or lifecycle). Only use if we add lanes.
-
-Cards & card content
-
-Task Card / Card: A draggable item representing one task.
-
-Card Face: The collapsed/default info shown on the card in the column.
-
-Card Metadata Row: A labeled row on the card face (ex: “DTG: …”).
-
-Card Title Line: The top line on the card face — you want this as Unit – Operation.
-
-Card Fields (Face Fields): The set of fields displayed on the card face:
-
-Unit – Operation
-
-DTG
-
-Operation Time Period
-
-Card Footer: Bottom area of the card face (often used for tags/priority/assignee).
-
-Card Badges: Small chips/pills on the card (priority label, tags, etc.).
-
-Task details (expanded)
-
-Task Modal / Task Detail Modal: The popup when you open a task.
-
-Expanded View: The full task detail inside the modal.
-
-Task ID: The unique identifier (hidden on card face, visible in modal).
-
-Task History Panel: The section that lists status/updates over time.
-
-Task Fields / Task Properties: All stored properties (title, dtg, op window, priority, etc.).
-
-Status, flow, and routing terminology
-
-Status: The current state of a task (maps 1:1 to a column).
-Transition / Move: Changing status from one column to another.
-Allowed Transition: A move permitted by flow rules.
-Blocked Transition: A move not permitted by flow rules.
-Workflow Rules / Flow Rules: The logic defining allowed transitions.
-Routing Path: A specific sequence of statuses (ex: “Front Route path”).
-Front Route: Your main operational routing statuses (QMOW → ANAV/SWO → REO → …).
-Back Route: Secondary routing statuses (your BR completion logic).
-Transmit Section: The final route step(s) for release/transmit.
-Lifecycle Status: A “phase” state like Approved / Active / Complete (if you’re using those columns).
-Group: The high-level category (Front Route / Transmit / Back Route / Lifecycle).
-Drag/drop UX terminology
-Drag Handle: The area of the card you grab (right now: the card itself).
-Pickup: The moment dragging starts.
-Drop Target: A column/body that can accept a card.
-Allowed Drop Highlighting: The visual highlight on columns you’re allowed to drop into.
-Disallowed Drop Dimming: The visual dim on columns you cannot drop into.
-Drag-Over State: The hover styling when you’re over a drop target.
-Creation & editing
-Create Task Modal: The modal used when pressing + Create Task.
-Create Form: The form fields inside that modal.
-Edit Fields: Changes made in the Task Detail Modal.
-Attachments & notes
-Attachments Panel: Where attached filenames/items appear.
-TXT Editor / Notes Editor: The text editing area for task notes (if used).
-Attachment Item: One file entry in the attachments list.
-Data & persistence (for later)
-App State: All tasks + settings needed to restore the board.
-Snapshot / Export: A saved JSON bundle of the app state (future).
-Import: Loading a snapshot into the app (future).
