@@ -5,6 +5,48 @@ Offline-capable Jira-style task tracker (Kanban + List View) with enforced flow 
 
 ---
 
+## Change Control (IMPORTANT)
+AI_BASELINE is a roadmap and rulebook. It does NOT authorize automatic implementation.
+
+---
+
+### No-code-change rule
+The AI must NOT modify or propose patch files unless:
+1) We discuss the change in chat first, AND
+2) I explicitly approve with one of these phrases:
+   - "Proceed with code changes"
+   - "Make the patch"
+   - "Generate updated files"
+   - "Implement this now"
+
+---
+
+If I have not explicitly approved, the AI may only:
+- analyze current behavior
+- explain likely causes
+- propose options with pros/cons
+- provide a plan or checklist
+- ask targeted questions (if needed)
+
+---
+
+### Safety rule: don’t break working features
+When proposing a change, the AI must identify:
+- what files will be touched
+- expected behavior change (if any)
+- risk of regression
+- rollback plan
+
+---
+
+### Patch workflow (preferred)
+When approved:
+- AI produces a patch limited to the agreed files
+- AI lists EXACTLY what changed (bullet list)
+- AI states how to test the change (quick steps)
+
+---
+
 ## Canonical branch + what “latest” means
 - **Canonical branch:** `main`
 - **Latest baseline:** HEAD of `main` unless you explicitly tell me to use a tag or commit SHA.
