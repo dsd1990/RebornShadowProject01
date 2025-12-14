@@ -6,20 +6,16 @@ Offline-capable Jira-style task tracker (Kanban + List View) with enforced flow 
 ---
 
 ## Change Control (IMPORTANT)
-AI_BASELINE is a roadmap and rulebook. It does NOT authorize automatic implementation.
-
----
+AI_BASELINE is a roadmap and rulebook. It does **NOT** authorize automatic implementation.
 
 ### No-code-change rule
-The AI must NOT modify or propose patch files unless:
-1) We discuss the change in chat first, AND
+The AI must **NOT** modify code or generate patch files unless:
+1) We discuss the change in chat first, **AND**
 2) I explicitly approve with one of these phrases:
    - "Proceed with code changes"
    - "Make the patch"
    - "Generate updated files"
    - "Implement this now"
-
----
 
 If I have not explicitly approved, the AI may only:
 - analyze current behavior
@@ -28,8 +24,6 @@ If I have not explicitly approved, the AI may only:
 - provide a plan or checklist
 - ask targeted questions (if needed)
 
----
-
 ### Safety rule: don’t break working features
 When proposing a change, the AI must identify:
 - what files will be touched
@@ -37,7 +31,9 @@ When proposing a change, the AI must identify:
 - risk of regression
 - rollback plan
 
----
+Additionally:
+- If a feature is currently working, the default approach is **minimal, localized change**.
+- No refactors “while we’re here” unless explicitly approved.
 
 ### Patch workflow (preferred)
 When approved:
@@ -64,59 +60,59 @@ Run offline by opening `index.html` in a browser.
 ---
 
 ## Raw Link Index (preferred for AI syncing)
-GitHub’s normal UI pages can fail to load in some environments. The raw links below are the authoritative way for me to fetch the latest files.
+GitHub’s normal UI pages can fail to load in some environments. The raw links below are the authoritative way for the AI to fetch the latest files.
 
-### Base raw URL
-`https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/`
+### Base raw URL (main)
+https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/
 
 ### Entry
-- `index.html`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/index.html
+- index.html  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/index.html
 
 ### JavaScript (js/)
-- `js/main.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/main.js
-- `js/data.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/data.js
-- `js/flowRules.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/flowRules.js
-- `js/drag-drop.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/drag-drop.js
-- `js/modals.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/modals.js
-- `js/kanban-render.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/kanban-render.js
-- `js/list-render.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/list-render.js
-- `js/attachments.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/attachments.js
-- `js/priority.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/priority.js
-- `js/utils.js`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/utils.js
+- js/main.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/main.js
+- js/data.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/data.js
+- js/flowRules.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/flowRules.js
+- js/drag-drop.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/drag-drop.js
+- js/modals.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/modals.js
+- js/kanban-render.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/kanban-render.js
+- js/list-render.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/list-render.js
+- js/attachments.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/attachments.js
+- js/priority.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/priority.js
+- js/utils.js  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/utils.js
 
 ### CSS (css/)
-- `css/styles.css`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/styles.css
-- `css/global.css`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/global.css
-- `css/kanban.css`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/kanban.css
-- `css/list-view.css`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/list-view.css
-- `css/modal-and-metadata.css`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/modal-and-metadata.css
-- `css/forms-and-dropzone.css`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/forms-and-dropzone.css
-- `css/attachments-and-editor.css`
-  - https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/attachments-and-editor.css
+- css/styles.css  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/styles.css
+- css/global.css  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/global.css
+- css/kanban.css  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/kanban.css
+- css/list-view.css  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/list-view.css
+- css/modal-and-metadata.css  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/modal-and-metadata.css
+- css/forms-and-dropzone.css  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/forms-and-dropzone.css
+- css/attachments-and-editor.css  
+  https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/attachments-and-editor.css
 
 ---
 
 ## Pinning a specific commit (when you want zero ambiguity)
-If you want me to work off an exact commit, send me the commit SHA and I’ll use raw links like:
+If you want the AI to work off an exact commit, send the commit SHA and the AI will use raw links like:
 
-`https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/<COMMIT_SHA>/js/flowRules.js`
+https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/<COMMIT_SHA>/js/flowRules.js
 
 Same structure, but replace `main` with the SHA.
 
