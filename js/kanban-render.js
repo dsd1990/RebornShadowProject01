@@ -28,8 +28,12 @@ function createKanbanCardElement(task) {
         const meta = document.createElement("div");
         meta.className = "task-meta task-op-details";
         meta.innerHTML = `<div class="meta-item dtg-info">
-                <label>ID:</label>
-                <span class="dtg-value">${task.id}</span>
+                <label>DTG:</label>
+                <span class="dtg-value">${task.dtg || ""}</span>
+            </div>
+            <div class="meta-item op-period-info">
+                <label>Period:</label>
+                <span class="dtg-value">${task.opStartDisplay || ""}${task.opEndDisplay ? " - " + task.opEndDisplay : ""}</span>
             </div>`;
         div.appendChild(meta);
 
@@ -55,9 +59,16 @@ function createKanbanCardElement(task) {
         titleEl.textContent = `${task.unitName} - ${task.operationName}`;
     }
 
-    const idEl = cardEl.querySelector(".task-id-text");
-    if (idEl) {
-        idEl.textContent = task.id;
+    const dtgEl = cardEl.querySelector(".task-dtg-text");
+    if (dtgEl) {
+        dtgEl.textContent = task.dtg || "";
+    }
+
+    const opPeriodEl = cardEl.querySelector(".task-op-period-text");
+    if (opPeriodEl) {
+        const start = task.opStartDisplay || "";
+        const end = task.opEndDisplay || "";
+        opPeriodEl.textContent = end ? `${start} - ${end}` : start;
     }
 
     return cardEl;
