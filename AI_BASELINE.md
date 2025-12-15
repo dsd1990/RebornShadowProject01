@@ -66,45 +66,45 @@ GitHub’s normal UI pages can fail to load in some environments. The raw links 
 https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/
 
 ### Entry
-- index.html  
+- `index.html`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/index.html
 
 ### JavaScript (js/)
-- js/main.js  
+- `js/main.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/main.js
-- js/data.js  
+- `js/data.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/data.js
-- js/flowRules.js  
+- `js/flowRules.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/flowRules.js
-- js/drag-drop.js  
+- `js/drag-drop.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/drag-drop.js
-- js/modals.js  
+- `js/modals.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/modals.js
-- js/kanban-render.js  
+- `js/kanban-render.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/kanban-render.js
-- js/list-render.js  
+- `js/list-render.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/list-render.js
-- js/attachments.js  
+- `js/attachments.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/attachments.js
-- js/priority.js  
+- `js/priority.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/priority.js
-- js/utils.js  
+- `js/utils.js`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/js/utils.js
 
 ### CSS (css/)
-- css/styles.css  
+- `css/styles.css`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/styles.css
-- css/global.css  
+- `css/global.css`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/global.css
-- css/kanban.css  
+- `css/kanban.css`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/kanban.css
-- css/list-view.css  
+- `css/list-view.css`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/list-view.css
-- css/modal-and-metadata.css  
+- `css/modal-and-metadata.css`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/modal-and-metadata.css
-- css/forms-and-dropzone.css  
+- `css/forms-and-dropzone.css`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/forms-and-dropzone.css
-- css/attachments-and-editor.css  
+- `css/attachments-and-editor.css`  
   https://raw.githubusercontent.com/dsd1990/RebornShadowProject01/main/css/attachments-and-editor.css
 
 ---
@@ -185,9 +185,10 @@ Include:
 - Kanban Time Based indication refinement.
 - When a task is in Front Route i think the current flowRules.js may be more properly suited to be only for that section. Open to your ideas. When a package gets to Transmit it falls under a different timeline that requires a person to get the message out to units that require it in a timely fashion so time based alerts may be better for this seciton.
 - Is there a way to have a persistent stopwatch like feature that shows how long a package has been in the Transmit Section and that be visible on the task card while in that section? This would also be logged in the history array.
-- ## Planned Refinement: Front Route overflow + External Review visual separation
 
-### Problem A — Horizontal scrollbar appears inside Front Route section
+### Planned Refinement: Front Route overflow + External Review visual separation
+
+#### Problem A — Horizontal scrollbar appears inside Front Route section
 **Observed behavior**
 - When browser width is small, the **Front Route section** (QMOW/SWO/ANAV/REO) shows its own horizontal scrollbar.
 - Desired: **no internal section scrolling**. The **entire page** should scroll naturally (vertical page scroll), and the board should reflow responsively instead of creating an inner scroll region.
@@ -201,9 +202,7 @@ Include:
 - Preferred solutions may include: responsive wrap, stacking sections, collapsing to 2 columns per row, or moving External Review below on narrow screens.
 - Do not alter workflow/logic—CSS/layout only.
 
----
-
-### Problem B — External Review looks like the final step of Front Route
+#### Problem B — External Review looks like the final step of Front Route
 **Observed behavior**
 - External Review floats to the right (good), but the **shared background styling** makes it visually feel like the final Front Route step.
 - Desired: External Review is clearly a **separate “review lane/panel”** (a parallel gate), not the last Front Route column.
@@ -218,9 +217,7 @@ Include:
 **Notes**
 - Visual-only change preferred (CSS, container structure). No changes to statuses or flow rules.
 
----
-
-### When implementing this refinement
+#### When implementing this refinement
 - Provide 2–3 layout options with screenshots (or clear descriptions) before changing code.
 - Keep changes limited to: `index.html` structure + `css/kanban.css` (and possibly `css/styles.css`), unless explicitly approved.
 
@@ -259,7 +256,7 @@ Include:
 - **Card Face**: The collapsed/default info shown on the card in the column.
 - **Card Metadata Row**: A labeled row on the card face (ex: “DTG: …”).
 - **Card Title Line**: The top line on the card face — you want this as Unit – Operation.
-- **Card Fields (Face Fields)**: The set of fields displayed on the card face:
+- **Card Fields (Face Fields)**:
   - Unit – Operation
   - DTG
   - Operation Time Period
