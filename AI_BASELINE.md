@@ -305,3 +305,33 @@ Include:
 - **App State**: All tasks + settings needed to restore the board.
 - **Snapshot / Export**: A saved JSON bundle of the app state (future).
 - **Import**: Loading a snapshot into the app (future).
+- 
+## Source Sync Protocol (GitHub is the Source of Truth)
+
+### Source of truth
+- The repository on GitHub (`main`) is the **authoritative source** unless I explicitly pin a commit SHA.
+- Local/chat copies are considered **stale by default** until verified.
+
+### Pre-change verification (required before generating updated files)
+Before generating any patch, the AI must:
+1) Fetch the current raw contents of **each file that will be modified**.
+2) Confirm they match the expected repo structure (`index.html`, `js/`, `css/`).
+3) If there is a mismatch between:
+   - previously cached/local copies vs GitHub raw,
+   then GitHub raw wins and the AI must update its working copies to match.
+
+## AI Internal Dev Workflow (Standard)
+
+When generating code updates, the AI must follow this exact workflow:
+
+1) Re-fetch from GitHub raw links the exact files that will be modified (treat every session as stateless).
+2) Save fetched files into a local working snapshot (one folder for the session).
+3) Produce a “drift fingerprint” for each file to be edited (first 2 lines + last 2 lines OR a short hash) and confirm they are the expected versions.
+4) Apply minimal, scoped edits only to those verified files.
+5) Output:
+   - One ZIP patch with correct repo paths
+   - Individual updated files
+   - A list of changed files + concise change summary + quick test steps
+
+If raw fetch fails for any file, the AI must stop and request the file contents from the user (no guessing).
+
