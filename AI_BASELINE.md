@@ -32,8 +32,8 @@ When proposing a change, the AI must identify:
 - rollback plan
 
 Additionally:
-- If a feature is currently working, the default approach is **minimal, localized change**
-- No refactors “while we’re here” unless explicitly approved
+- If a feature is currently working, the default approach is **minimal, localized change**.
+- No refactors “while we’re here” unless explicitly approved.
 
 ### Patch workflow (preferred)
 When approved:
@@ -43,10 +43,41 @@ When approved:
 
 ---
 
+## Source Sync Protocol (GitHub is the Source of Truth)
+
+### Source of truth
+- The repository on GitHub (`main`) is the **authoritative source** unless I explicitly pin a commit SHA.
+- Local/chat copies are considered **stale by default** until verified.
+
+### Pre-change verification (required before generating updated files)
+Before generating any patch, the AI must:
+1) Fetch the current raw contents of **each file that will be modified**.
+2) Confirm they match the expected repo structure (`index.html`, `js/`, `css/`).
+3) If there is a mismatch between:
+   - previously cached/local copies vs GitHub raw,  
+   then GitHub raw wins and the AI must update its working copies to match.
+
+---
+
+## AI Internal Dev Workflow (Standard)
+When generating code updates, the AI must follow this exact workflow:
+1) Re-fetch from GitHub raw links the exact files that will be modified (treat every session as stateless).
+2) Save fetched files into a local working snapshot (one folder for the session).
+3) Produce a “drift fingerprint” for each file to be edited (first 2 lines + last 2 lines OR a short hash) and confirm they are the expected versions.
+4) Apply minimal, scoped edits only to those verified files.
+5) Output:
+   - One ZIP patch with correct repo paths
+   - Individual updated files
+   - A list of changed files + concise change summary + quick test steps
+
+If raw fetch fails for any file, the AI must stop and request the file contents from the user (no guessing).
+
+---
+
 ## Canonical branch + what “latest” means
 - **Canonical branch:** `main`
-- **Latest baseline:** HEAD of `main` unless you explicitly tell me to use a tag or commit SHA
-- **Stable checkpoints:** use Git tags (ex: `v0.2.0`) when something is known-good
+- **Latest baseline:** HEAD of `main` unless you explicitly tell me to use a tag or commit SHA.
+- **Stable checkpoints:** use Git tags (ex: `v0.2.0`) when something is known-good.
 
 ---
 
@@ -122,26 +153,26 @@ Same structure, but replace `main` with the SHA.
 1) **Single source of truth for status changes**
    - All moves (drag/drop, modal dropdown, any future bulk actions) MUST call:
      - `applyStatusChange(task, newStatus)`
-   - No direct `task.status = ...` in UI paths
+   - No direct `task.status = ...` in UI paths.
 
 2) **Flow rules enforcement**
-   - Allowed transitions are defined in `js/flowRules.js`
+   - Allowed transitions are defined in `js/flowRules.js`.
    - UI must reflect these rules:
      - highlight allowed drop targets
      - block invalid transitions
 
 3) **No duplicate global helpers**
-   - If a helper exists in `js/priority.js`, it must not be redefined elsewhere
-   - Avoid same function names in multiple files
+   - If a helper exists in `js/priority.js`, it must not be redefined elsewhere.
+   - Avoid same function names in multiple files.
 
 4) **DTG standard**
    - DTG format: **DDHHMMZMMMYY**
    - Example: `101330Z DEC 25`
-   - Validation + UI labels must match
+   - Validation + UI labels must match.
 
 5) **History integrity**
-   - `task.history` is always an array
-   - Rendering must be defensive (never crash if missing)
+   - `task.history` is always an array.
+   - Rendering must be defensive (never crash if missing).
 
 ---
 
@@ -173,7 +204,7 @@ Include:
   - `feat: ...`
   - `fix: ...`
   - `refactor: ...`
-- If flow behavior changes, say so in the commit message
+- If flow behavior changes, say so in the commit message.
 
 ---
 
