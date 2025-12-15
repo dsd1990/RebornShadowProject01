@@ -162,3 +162,29 @@
     margin-bottom: 0;
 }
 
+/* ===================== EXTERNAL REVIEW PANEL ===================== */
+
+.workflow-group[data-group="Front-Route"] .group-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+/* Keep the core 4 Front Route columns together; they can scroll horizontally if needed */
+.workflow-group[data-group="Front-Route"] .group-row .group-columns {
+    flex: 1 1 auto;
+    overflow-x: auto;
+    padding-bottom: 6px;
+}
+
+/* External Review panel sits to the right, always visible */
+.workflow-group[data-group="Front-Route"] .external-review-panel {
+    flex: 0 0 320px;
+    min-width: 280px;
+    max-width: 360px;
+}
+
+.workflow-group[data-group="Front-Route"] .external-review-panel .task-list {
+    min-height: 120px;
+}
+

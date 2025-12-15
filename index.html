@@ -25,13 +25,8 @@
 
                 <div class="task-meta task-op-details">
                     <div class="meta-item dtg-info">
-                        <label>DTG:</label>
-                        <span class="dtg-value task-dtg-text"></span>
-                    </div>
-
-                    <div class="meta-item op-period-info">
-                        <label>Period:</label>
-                        <span class="dtg-value task-op-period-text"></span>
+                        <label>ID:</label>
+                        <span class="dtg-value task-id-text"></span>
                     </div>
                 </div>
             </div>
@@ -88,7 +83,8 @@
                 <!-- Front Route Group -->
                 <div class="workflow-group" data-group="Front-Route">
                     <h2 class="group-header">Front Route</h2>
-                    <div class="group-columns">
+                    <div class="group-row">
+                        <div class="group-columns">
 
                         <div class="kanban-column" id="column-qmow">
                             <h3 class="column-header">QMOW <span class="task-count">(0)</span></h3>
@@ -109,6 +105,14 @@
                             <h3 class="column-header">REO <span class="task-count">(0)</span></h3>
                             <div class="task-list" data-status="reo"></div>
 </div>
+                        </div>
+
+
+                    <!-- External Review Panel (acts like a 5th Front Route column) -->
+                    <div class="kanban-column external-review-panel" id="column-external-review">
+                        <h3 class="column-header">External Review <span class="task-count">(0)</span></h3>
+                        <div class="task-list" data-status="external-review"></div>
+                    </div>
                     </div>
                 </div>
 
@@ -257,6 +261,7 @@
                             <option value="qmow">QMOW</option>
                             <option value="swo">SWO</option>
                             <option value="anav">ANAV</option>
+                            <option value="external-review">External Review</option>
                             <option value="reo">REO</option>
                             <option value="released">Released</option>
                             <option value="qm-xmit">QM XMIT</option>
@@ -305,7 +310,24 @@
                         <p><strong>Priority:</strong> <span id="modal-priority"></span></p>
                     </div>
 
-                    <div class="attachments-section">
+                    
+                    <div class="metadata-section" id="modal-external-review-section">
+                        <div class="metadata-header">
+                            <h3>External Review</h3>
+                        </div>
+
+                        <p><label><input type="checkbox" id="er-required-n34"> N34 Review Required</label></p>
+                        <p><label><input type="checkbox" id="er-required-n57"> N5/7 Review Required</label></p>
+
+                        <hr>
+
+                        <p><label><input type="checkbox" id="er-complete-n34"> N34 Complete</label></p>
+                        <p><label><input type="checkbox" id="er-complete-n57"> N5/7 Complete</label></p>
+
+                        <p id="er-hint" style="margin-top:10px; color:#5e6c84; font-size:12px;"></p>
+                    </div>
+
+<div class="attachments-section">
                         <h3>Attachments</h3>
                         <ul class="attachment-list">
                             <li class="attachment-item editable" data-file-type="txt">

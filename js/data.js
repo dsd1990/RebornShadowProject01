@@ -110,4 +110,4 @@ const ASSIGNEE_MAP = {
 };
 
 // Front-route status list (used for NoActionTaken logic)
-const FRONT_ROUTE_STATUSES = ["qmow", "swo", "anav", "reo"];
+const FRONT_ROUTE_STATUSES = ["qmow", "swo", "anav", "external-review", "reo"];

@@ -8,7 +8,7 @@
 function getGroupForStatus(status) {
     const frontRoute = typeof FRONT_ROUTE_STATUSES !== "undefined"
         ? FRONT_ROUTE_STATUSES
-        : ["qmow", "swo", "anav", "reo"];
+        : ["qmow", "swo", "anav", "external-review", "reo"];
 
     const transmit = ["released", "qm-xmit", "swo-xmit", "awaiting-ack"];
     const backRoute = ["qm-br", "swo-br", "anav-br", "reo-br"];
@@ -19,6 +19,65 @@ function getGroupForStatus(status) {
     if (backRoute.includes(status)) return "Back-Route";
     if (lifecycle.includes(status)) return "Lifecycle";
     return "Unknown";
+}
+
+
+// ---- External review helpers (N34 / N5/7) ----
+
+function ensureExternalReviewShape(task) {
+    if (!task.externalReview) {
+        task.externalReview = {
+            required: { n34: false, n57: false },
+            complete: { n34: false, n57: false }
+        };
+        return;
+    }
+    if (!task.externalReview.required) task.externalReview.required = { n34: false, n57: false };
+    if (!task.externalReview.complete) task.externalReview.complete = { n34: false, n57: false };
+    if (typeof task.externalReview.required.n34 !== "boolean") task.externalReview.required.n34 = false;
+    if (typeof task.externalReview.required.n57 !== "boolean") task.externalReview.required.n57 = false;
+    if (typeof task.externalReview.complete.n34 !== "boolean") task.externalReview.complete.n34 = false;
+    if (typeof task.externalReview.complete.n57 !== "boolean") task.externalReview.complete.n57 = false;
+}
+
+function requiresExternalReview(task) {
+    ensureExternalReviewShape(task);
+    return !!(task.externalReview.required.n34 || task.externalReview.required.n57);
+}
+
+function isExternalReviewComplete(task) {
+    if (!requiresExternalReview(task)) return true; // no requirement = implicitly complete
+    const req = task.externalReview.required;
+    const done = task.externalReview.complete;
+    return (!req.n34 || done.n34) && (!req.n57 || done.n57);
+}
+
+// ---- Front Route "reviewed" markers ----
+// For now we treat "reviewed" as: the task has entered that status at least once.
+
+function ensureFrontRouteReviewShape(task) {
+    if (!task.frontRouteReviews) task.frontRouteReviews = { anav: false, swo: false };
+    if (typeof task.frontRouteReviews.anav !== "boolean") task.frontRouteReviews.anav = false;
+    if (typeof task.frontRouteReviews.swo !== "boolean") task.frontRouteReviews.swo = false;
+}
+
+function markFrontRouteReviewed(task, status) {
+    ensureFrontRouteReviewShape(task);
+    if (status === "anav") task.frontRouteReviews.anav = true;
+    if (status === "swo") task.frontRouteReviews.swo = true;
+}
+
+function hasBothFrontRouteReviews(task) {
+    ensureFrontRouteReviewShape(task);
+    return !!(task.frontRouteReviews.anav && task.frontRouteReviews.swo);
+}
+
+function canProceedToREO(task) {
+    // External review gate applies ONLY when an external review was required in QMOW.
+    if (!requiresExternalReview(task)) return true;
+
+    // Must be complete AND both ANAV + SWO have reviewed at least once.
+    return isExternalReviewComplete(task) && hasBothFrontRouteReviews(task);
 }
 
 /**
@@ -33,11 +92,35 @@ function isTransitionAllowed(task, fromStatus, toStatus) {
     switch (fromStatus) {
         // Front Route
         case "qmow":
+            // Initial placement (creation always starts here)
             return ["anav", "swo"].includes(toStatus);
+
         case "anav":
-            return ["swo", "reo"].includes(toStatus);
+            if (toStatus === "external-review") return requiresExternalReview(task);
+            if (toStatus === "reo") return canProceedToREO(task);
+            return ["swo"].includes(toStatus);
+
         case "swo":
-            return ["anav", "reo"].includes(toStatus);
+            if (toStatus === "external-review") return requiresExternalReview(task);
+            if (toStatus === "reo") return canProceedToREO(task);
+            return ["anav"].includes(toStatus);
+
+        case "external-review": {
+            // External review only exists for tasks flagged in QMOW
+            if (!requiresExternalReview(task)) return false;
+
+            // Do not allow leaving External Review until it is complete
+            if (!isExternalReviewComplete(task)) return false;
+
+            if (toStatus === "reo") return hasBothFrontRouteReviews(task);
+
+            // If a front-route review is missing, send back for completion.
+            if (toStatus === "anav") return !task.frontRouteReviews?.anav;
+            if (toStatus === "swo") return !task.frontRouteReviews?.swo;
+
+            return false;
+        }
+
         case "reo":
             // Back to QMOW or into Transmit: Released
             return ["qmow", "released"].includes(toStatus);
@@ -111,6 +194,11 @@ function handleBackRouteCompletion(task, completionStatus) {
 function handlePostStatusTransition(task, oldStatus, newStatus) {
     // Ensure group matches status
     task.group = getGroupForStatus(newStatus);
+
+    // Mark Front Route reviews (we treat "review complete" as "entered this lane at least once")
+    if (newStatus === "anav" || newStatus === "swo") {
+        markFrontRouteReviewed(task, newStatus);
+    }
 
     // If we arrived into a BR status, check if that completes the Back Route
     if (newStatus === "swo-br" && !task.backRouteFullRequired) {

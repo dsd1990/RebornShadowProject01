@@ -48,6 +48,172 @@ function setupModalListeners() {
         statusDropdown.removeEventListener("change", handleStatusChange);
         statusDropdown.addEventListener("change", handleStatusChange);
     }
+
+    // External Review checkboxes
+    ["er-required-n34", "er-required-n57", "er-complete-n34", "er-complete-n57"].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.removeEventListener("change", handleExternalReviewCheckboxChange);
+        el.addEventListener("change", handleExternalReviewCheckboxChange);
+    });
+}
+
+
+// ----- External Review (N34 / N5/7) UI -----
+
+function ensureExternalReviewShape(task) {
+    if (!task.externalReview) {
+        task.externalReview = {
+            required: { n34: false, n57: false },
+            complete: { n34: false, n57: false }
+        };
+        return;
+    }
+    if (!task.externalReview.required) task.externalReview.required = { n34: false, n57: false };
+    if (!task.externalReview.complete) task.externalReview.complete = { n34: false, n57: false };
+    if (typeof task.externalReview.required.n34 !== "boolean") task.externalReview.required.n34 = false;
+    if (typeof task.externalReview.required.n57 !== "boolean") task.externalReview.required.n57 = false;
+    if (typeof task.externalReview.complete.n34 !== "boolean") task.externalReview.complete.n34 = false;
+    if (typeof task.externalReview.complete.n57 !== "boolean") task.externalReview.complete.n57 = false;
+}
+
+function renderExternalReviewUI(task) {
+    const section = document.getElementById("modal-external-review-section");
+    if (!section) return;
+
+    ensureExternalReviewShape(task);
+    section.setAttribute("data-current-task-id", task.id);
+
+    const reqN34 = document.getElementById("er-required-n34");
+    const reqN57 = document.getElementById("er-required-n57");
+    const doneN34 = document.getElementById("er-complete-n34");
+    const doneN57 = document.getElementById("er-complete-n57");
+    const hint = document.getElementById("er-hint");
+
+    if (!reqN34 || !reqN57 || !doneN34 || !doneN57) return;
+
+    // Sync values
+    reqN34.checked = !!task.externalReview.required.n34;
+    reqN57.checked = !!task.externalReview.required.n57;
+
+    doneN34.checked = !!task.externalReview.complete.n34;
+    doneN57.checked = !!task.externalReview.complete.n57;
+
+    const requiresAny = !!(task.externalReview.required.n34 || task.externalReview.required.n57);
+    const inQMOW = task.status === "qmow";
+    const inExternal = task.status === "external-review";
+
+    // Requirement flags are set ONLY in QMOW
+    reqN34.disabled = !inQMOW;
+    reqN57.disabled = !inQMOW;
+
+    // Completion flags are editable ONLY while in External Review (and only if required)
+    doneN34.disabled = !(inExternal && task.externalReview.required.n34);
+    doneN57.disabled = !(inExternal && task.externalReview.required.n57);
+
+    // Hide completion rows that aren't required (keeps UI clean)
+    const n34Row = doneN34.closest("p");
+    const n57Row = doneN57.closest("p");
+    if (n34Row) n34Row.style.display = task.externalReview.required.n34 ? "" : "none";
+    if (n57Row) n57Row.style.display = task.externalReview.required.n57 ? "" : "none";
+
+    if (!requiresAny) {
+        if (n34Row) n34Row.style.display = "none";
+        if (n57Row) n57Row.style.display = "none";
+    }
+
+    // Hint text
+    if (hint) {
+        if (inQMOW) {
+            hint.textContent = "Set External Review requirements here (QMOW only).";
+        } else if (!requiresAny) {
+            hint.textContent = "No external review required for this task.";
+        } else if (!inExternal) {
+            hint.textContent = "This task is flagged for external review. Move it into External Review after ANAV/SWO when ready.";
+        } else {
+            const n34Done = !task.externalReview.required.n34 || task.externalReview.complete.n34;
+            const n57Done = !task.externalReview.required.n57 || task.externalReview.complete.n57;
+            hint.textContent = (n34Done && n57Done)
+                ? "External review complete. Move the task back to any missing Front Route review (ANAV/SWO), or forward to REO if both are already done."
+                : "Complete the required external review checkbox(es) above before moving the task out of External Review.";
+        }
+    }
+}
+
+function handleExternalReviewCheckboxChange(e) {
+    const section = document.getElementById("modal-external-review-section");
+    if (!section) return;
+
+    const taskId = section.getAttribute("data-current-task-id");
+    if (!taskId) return;
+
+    const task = ALL_TASKS.find(t => t.id === taskId);
+    if (!task) return;
+
+    ensureExternalReviewShape(task);
+
+    const id = e.target && e.target.id;
+
+    const pushHistory = (action) => {
+        if (!Array.isArray(task.history)) task.history = [];
+        task.history.push({ timestamp: new Date().toISOString(), action });
+    };
+
+    if (id === "er-required-n34" || id === "er-required-n57") {
+        // Requirements can only be edited while in QMOW
+        if (task.status !== "qmow") {
+            renderExternalReviewUI(task);
+            alert("External review requirements can only be edited while the task is in QMOW.");
+            return;
+        }
+
+        if (id === "er-required-n34") {
+            task.externalReview.required.n34 = !!e.target.checked;
+            if (!task.externalReview.required.n34) task.externalReview.complete.n34 = false;
+            pushHistory(`External review requirement updated: N34 required = ${task.externalReview.required.n34 ? "YES" : "NO"}.`);
+        } else {
+            task.externalReview.required.n57 = !!e.target.checked;
+            if (!task.externalReview.required.n57) task.externalReview.complete.n57 = false;
+            pushHistory(`External review requirement updated: N5/7 required = ${task.externalReview.required.n57 ? "YES" : "NO"}.`);
+        }
+
+        renderExternalReviewUI(task);
+        renderTaskHistory(task);
+        renderKanbanBoard();
+        sortAndRenderList();
+        return;
+    }
+
+    if (id === "er-complete-n34" || id === "er-complete-n57") {
+        // Completion can only be edited while in External Review (and only if required)
+        if (task.status !== "external-review") {
+            renderExternalReviewUI(task);
+            alert("External review completion can only be set while the task is in External Review.");
+            return;
+        }
+
+        if (id === "er-complete-n34") {
+            if (!task.externalReview.required.n34) {
+                renderExternalReviewUI(task);
+                alert("N34 is not required for this task.");
+                return;
+            }
+            task.externalReview.complete.n34 = !!e.target.checked;
+            pushHistory(`External review progress: N34 marked ${task.externalReview.complete.n34 ? "COMPLETE" : "INCOMPLETE"}.`);
+        } else {
+            if (!task.externalReview.required.n57) {
+                renderExternalReviewUI(task);
+                alert("N5/7 is not required for this task.");
+                return;
+            }
+            task.externalReview.complete.n57 = !!e.target.checked;
+            pushHistory(`External review progress: N5/7 marked ${task.externalReview.complete.n57 ? "COMPLETE" : "INCOMPLETE"}.`);
+        }
+
+        renderExternalReviewUI(task);
+        renderTaskHistory(task);
+        return;
+    }
 }
 
 function openCreateModal() {
@@ -139,6 +305,9 @@ function openTaskDetailModal(e) {
 
     // History
     renderTaskHistory(task);
+
+    // External Review (N34 / N5/7)
+    renderExternalReviewUI(task);
 
     const detailModal = document.getElementById("taskDetailModal");
     if (detailModal) {
@@ -395,6 +564,8 @@ function handleNewTaskSubmit(e) {
         id: newTaskId,
         status: "qmow",
         group: "Front-Route",
+        externalReview: { required: { n34: false, n57: false }, complete: { n34: false, n57: false } },
+        frontRouteReviews: { anav: false, swo: false },
         unitName,
         operationName,
         dtg: dtgInput.toUpperCase(),
