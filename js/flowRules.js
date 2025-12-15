@@ -6,156 +6,79 @@
  * (Used for display + future filtering.)
  */
 function getGroupForStatus(status) {
-    const frontRoute = typeof FRONT_ROUTE_STATUSES !== "undefined"
-        ? FRONT_ROUTE_STATUSES
-        : ["qmow", "swo", "anav", "external-review", "reo"];
+  const frontRoute =
+    typeof FRONT_ROUTE_STATUSES !== "undefined"
+      ? FRONT_ROUTE_STATUSES
+      : ["qmow", "swo", "anav", "reo"];
 
-    const transmit = ["released", "qm-xmit", "swo-xmit", "awaiting-ack"];
-    const backRoute = ["qm-br", "swo-br", "anav-br", "reo-br"];
-    const lifecycle = ["approved", "active", "wasp-deletions", "filed"];
+  const transmit = ["released", "qm-xmit", "swo-xmit", "awaiting-ack"];
+  const backRoute = ["qm-br", "swo-br", "anav-br", "reo-br"];
+  const lifecycle = ["approved", "active", "wasp-deletions", "filed"];
 
-    if (frontRoute.includes(status)) return "Front-Route";
-    if (transmit.includes(status)) return "Transmit-Section";
-    if (backRoute.includes(status)) return "Back-Route";
-    if (lifecycle.includes(status)) return "Lifecycle";
-    return "Unknown";
-}
-
-
-// ---- External review helpers (N34 / N5/7) ----
-
-function ensureExternalReviewShape(task) {
-    if (!task.externalReview) {
-        task.externalReview = {
-            required: { n34: false, n57: false },
-            complete: { n34: false, n57: false }
-        };
-        return;
-    }
-    if (!task.externalReview.required) task.externalReview.required = { n34: false, n57: false };
-    if (!task.externalReview.complete) task.externalReview.complete = { n34: false, n57: false };
-    if (typeof task.externalReview.required.n34 !== "boolean") task.externalReview.required.n34 = false;
-    if (typeof task.externalReview.required.n57 !== "boolean") task.externalReview.required.n57 = false;
-    if (typeof task.externalReview.complete.n34 !== "boolean") task.externalReview.complete.n34 = false;
-    if (typeof task.externalReview.complete.n57 !== "boolean") task.externalReview.complete.n57 = false;
-}
-
-function requiresExternalReview(task) {
-    ensureExternalReviewShape(task);
-    return !!(task.externalReview.required.n34 || task.externalReview.required.n57);
-}
-
-function isExternalReviewComplete(task) {
-    if (!requiresExternalReview(task)) return true; // no requirement = implicitly complete
-    const req = task.externalReview.required;
-    const done = task.externalReview.complete;
-    return (!req.n34 || done.n34) && (!req.n57 || done.n57);
-}
-
-// ---- Front Route "reviewed" markers ----
-// For now we treat "reviewed" as: the task has entered that status at least once.
-
-function ensureFrontRouteReviewShape(task) {
-    if (!task.frontRouteReviews) task.frontRouteReviews = { anav: false, swo: false };
-    if (typeof task.frontRouteReviews.anav !== "boolean") task.frontRouteReviews.anav = false;
-    if (typeof task.frontRouteReviews.swo !== "boolean") task.frontRouteReviews.swo = false;
-}
-
-function markFrontRouteReviewed(task, status) {
-    ensureFrontRouteReviewShape(task);
-    if (status === "anav") task.frontRouteReviews.anav = true;
-    if (status === "swo") task.frontRouteReviews.swo = true;
-}
-
-function hasBothFrontRouteReviews(task) {
-    ensureFrontRouteReviewShape(task);
-    return !!(task.frontRouteReviews.anav && task.frontRouteReviews.swo);
-}
-
-function canProceedToREO(task) {
-    // External review gate applies ONLY when an external review was required in QMOW.
-    if (!requiresExternalReview(task)) return true;
-
-    // Must be complete AND both ANAV + SWO have reviewed at least once.
-    return isExternalReviewComplete(task) && hasBothFrontRouteReviews(task);
+  if (frontRoute.includes(status)) return "Front-Route";
+  if (transmit.includes(status)) return "Transmit-Section";
+  if (backRoute.includes(status)) return "Back-Route";
+  if (lifecycle.includes(status)) return "Lifecycle";
+  return "Unknown";
 }
 
 /**
  * Workflow guard: can this task move from fromStatus -> toStatus?
  */
 function isTransitionAllowed(task, fromStatus, toStatus) {
-    if (!toStatus) return false;
-    if (fromStatus === toStatus) return true;
+  if (!toStatus) return false;
+  if (fromStatus === toStatus) return true;
 
-    const fullBR = !!task.backRouteFullRequired;
+  const fullBR = !!task.backRouteFullRequired;
 
-    switch (fromStatus) {
-        // Front Route
-        case "qmow":
-            // Initial placement (creation always starts here)
-            return ["anav", "swo"].includes(toStatus);
+  switch (fromStatus) {
+    // Front Route
+    case "qmow":
+      return ["anav", "swo"].includes(toStatus);
 
-        case "anav":
-            if (toStatus === "external-review") return requiresExternalReview(task);
-            if (toStatus === "reo") return canProceedToREO(task);
-            return ["swo"].includes(toStatus);
+    // ✅ UPDATED: allow returning to QMOW
+    case "anav":
+      return ["swo", "reo", "qmow"].includes(toStatus);
 
-        case "swo":
-            if (toStatus === "external-review") return requiresExternalReview(task);
-            if (toStatus === "reo") return canProceedToREO(task);
-            return ["anav"].includes(toStatus);
+    // ✅ UPDATED: allow returning to QMOW
+    case "swo":
+      return ["anav", "reo", "qmow"].includes(toStatus);
 
-        case "external-review": {
-            // External review only exists for tasks flagged in QMOW
-            if (!requiresExternalReview(task)) return false;
+    case "reo":
+      // Back to QMOW or into Transmit: Released
+      return ["qmow", "released"].includes(toStatus);
 
-            // Do not allow leaving External Review until it is complete
-            if (!isExternalReviewComplete(task)) return false;
+    // Transmit
+    case "released":
+      return toStatus === "qm-xmit";
+    case "qm-xmit":
+      return toStatus === "swo-xmit";
+    case "swo-xmit":
+      return toStatus === "awaiting-ack";
+    case "awaiting-ack":
+      return toStatus === "qm-br";
 
-            if (toStatus === "reo") return hasBothFrontRouteReviews(task);
+    // Back Route
+    case "qm-br":
+      return toStatus === "swo-br";
+    case "swo-br":
+      // If full Back Route not required, completion is automatic (no manual transition)
+      if (fullBR) return toStatus === "anav-br";
+      return false;
+    case "anav-br":
+      return fullBR && toStatus === "reo-br";
+    case "reo-br":
+      // Completion triggers automatic move; no manual destination from here
+      return false;
 
-            // If a front-route review is missing, send back for completion.
-            if (toStatus === "anav") return !task.frontRouteReviews?.anav;
-            if (toStatus === "swo") return !task.frontRouteReviews?.swo;
+    // Lifecycle
+    case "wasp-deletions":
+      // Manual move to Filed
+      return toStatus === "filed";
 
-            return false;
-        }
-
-        case "reo":
-            // Back to QMOW or into Transmit: Released
-            return ["qmow", "released"].includes(toStatus);
-
-        // Transmit
-        case "released":
-            return toStatus === "qm-xmit";
-        case "qm-xmit":
-            return toStatus === "swo-xmit";
-        case "swo-xmit":
-            return toStatus === "awaiting-ack";
-        case "awaiting-ack":
-            return toStatus === "qm-br";
-
-        // Back Route
-        case "qm-br":
-            return toStatus === "swo-br";
-        case "swo-br":
-            // If full Back Route not required, completion is automatic (no manual transition)
-            if (fullBR) return toStatus === "anav-br";
-            return false;
-        case "anav-br":
-            return fullBR && toStatus === "reo-br";
-        case "reo-br":
-            // Completion triggers automatic move; no manual destination from here
-            return false;
-
-        // Lifecycle
-        case "wasp-deletions":
-            // Manual move to Filed
-            return toStatus === "filed";
-
-        default:
-            return false;
-    }
+    default:
+      return false;
+  }
 }
 
 /**
@@ -163,80 +86,82 @@ function isTransitionAllowed(task, fromStatus, toStatus) {
  * based on opStart/opEnd and current time.
  */
 function determineLifecycleStatus(task) {
-    const now = Date.now();
-    const start = task.opStartISO ? new Date(task.opStartISO).getTime() : null;
-    const end = task.opEndISO ? new Date(task.opEndISO).getTime() : null;
+  const now = Date.now();
+  const start = task.opStartISO ? new Date(task.opStartISO).getTime() : null;
+  const end = task.opEndISO ? new Date(task.opEndISO).getTime() : null;
 
-    if (start && now < start) return "approved";
-    if (start && (!end || now <= end)) return "active";
-    return "wasp-deletions";
+  if (start && now < start) return "approved";
+  if (start && (!end || now <= end)) return "active";
+  return "wasp-deletions";
 }
 
 function handleBackRouteCompletion(task, completionStatus) {
-    const lifecycleStatus = determineLifecycleStatus(task);
-    const nowIso = new Date().toISOString();
+  const lifecycleStatus = determineLifecycleStatus(task);
+  const nowIso = new Date().toISOString();
 
-    const oldStatus = completionStatus;
-    task.status = lifecycleStatus;
-    task.group = getGroupForStatus(lifecycleStatus);
-    task.timeInCurrentStatus = nowIso;
+  const oldStatus = completionStatus;
+  task.status = lifecycleStatus;
+  task.group = getGroupForStatus(lifecycleStatus);
+  task.timeInCurrentStatus = nowIso;
 
-    if (!Array.isArray(task.history)) task.history = [];
-    task.history.push({
-        timestamp: nowIso,
-        action: `Back Route complete at ${oldStatus.toUpperCase()}; moved to ${lifecycleStatus.toUpperCase()} based on operation dates.`
-    });
+  if (!Array.isArray(task.history)) task.history = [];
+  task.history.push({
+    timestamp: nowIso,
+    action: `Back Route complete at ${oldStatus.toUpperCase()}; moved to ${lifecycleStatus.toUpperCase()} based on operation dates.`,
+  });
 }
 
 /**
  * Post-transition hook for any automatic follow-on behavior.
  */
 function handlePostStatusTransition(task, oldStatus, newStatus) {
-    // Ensure group matches status
-    task.group = getGroupForStatus(newStatus);
+  // Ensure group matches status
+  task.group = getGroupForStatus(newStatus);
 
-    // Mark Front Route reviews (we treat "review complete" as "entered this lane at least once")
-    if (newStatus === "anav" || newStatus === "swo") {
-        markFrontRouteReviewed(task, newStatus);
-    }
-
-    // If we arrived into a BR status, check if that completes the Back Route
-    if (newStatus === "swo-br" && !task.backRouteFullRequired) {
-        // Back Route ends at SWO BR (no ANAV/REO BR required)
-        handleBackRouteCompletion(task, newStatus);
-    } else if (newStatus === "reo-br" && task.backRouteFullRequired) {
-        // Full Back Route path required; completion at REO BR
-        handleBackRouteCompletion(task, newStatus);
-    }
+  // If we arrived into a BR status, check if that completes the Back Route
+  if (newStatus === "swo-br" && !task.backRouteFullRequired) {
+    // Back Route ends at SWO BR (no ANAV/REO BR required)
+    handleBackRouteCompletion(task, newStatus);
+  } else if (newStatus === "reo-br" && task.backRouteFullRequired) {
+    // Full Back Route path required; completion at REO BR
+    handleBackRouteCompletion(task, newStatus);
+  }
 }
 
 /**
  * Central helper to update status safely, record history, and apply flow rules.
  */
 function applyStatusChange(task, newStatus, options = {}) {
-    const oldStatus = task.status;
+  const oldStatus = task.status;
 
-    if (!isTransitionAllowed(task, oldStatus, newStatus)) {
-        console.warn(`Transition ${oldStatus} -> ${newStatus} not allowed for ${task.id}`);
-        return false;
-    }
+  if (!isTransitionAllowed(task, oldStatus, newStatus)) {
+    console.warn(`Transition ${oldStatus} -> ${newStatus} not allowed for ${task.id}`);
+    return false;
+  }
 
-    const nowIso = new Date().toISOString();
-    task.status = newStatus;
-    task.group = getGroupForStatus(newStatus);
-    task.timeInCurrentStatus = nowIso;
+  const nowIso = new Date().toISOString();
+  task.status = newStatus;
+  task.group = getGroupForStatus(newStatus);
+  task.timeInCurrentStatus = nowIso;
 
-    const actor = options.actor || "User A";
-    const reason =
-        options.reason ||
-        `Status changed from ${oldStatus.toUpperCase()} to ${newStatus.toUpperCase()} by ${actor}.`;
+  const actor = options.actor || "User A";
+  const actionText =
+    options.reason ||
+    `Status changed from ${oldStatus.toUpperCase()} to ${newStatus.toUpperCase()} by ${actor}.`;
 
-    if (!Array.isArray(task.history)) task.history = [];
-    task.history.push({ timestamp: nowIso, action: reason });
+  if (!Array.isArray(task.history)) task.history = [];
 
-    handlePostStatusTransition(task, oldStatus, newStatus);
+  // ✅ UPDATED: allow tagged/typed history events while preserving "action"
+  const entry = { timestamp: nowIso, action: actionText };
+  if (options.eventType) entry.type = options.eventType;
+  if (options.meta && typeof options.meta === "object") {
+    Object.assign(entry, options.meta);
+  }
 
-    return true;
+  task.history.push(entry);
+
+  handlePostStatusTransition(task, oldStatus, newStatus);
+  return true;
 }
 
 /**
@@ -244,23 +169,23 @@ function applyStatusChange(task, newStatus, options = {}) {
  * Call this before rendering Kanban/List views if desired.
  */
 function enforceLifecycleAutoMoves() {
-    ALL_TASKS.forEach(task => {
-        if (!["approved", "active"].includes(task.status)) return;
+  ALL_TASKS.forEach((task) => {
+    if (!["approved", "active"].includes(task.status)) return;
 
-        const desired = determineLifecycleStatus(task);
-        if (desired === task.status) return;
+    const desired = determineLifecycleStatus(task);
+    if (desired === task.status) return;
 
-        const oldStatus = task.status;
-        const nowIso = new Date().toISOString();
+    const oldStatus = task.status;
+    const nowIso = new Date().toISOString();
 
-        task.status = desired;
-        task.group = getGroupForStatus(desired);
-        task.timeInCurrentStatus = nowIso;
+    task.status = desired;
+    task.group = getGroupForStatus(desired);
+    task.timeInCurrentStatus = nowIso;
 
-        if (!Array.isArray(task.history)) task.history = [];
-        task.history.push({
-            timestamp: nowIso,
-            action: `Lifecycle auto-update from ${oldStatus.toUpperCase()} to ${desired.toUpperCase()} based on operation dates.`
-        });
+    if (!Array.isArray(task.history)) task.history = [];
+    task.history.push({
+      timestamp: nowIso,
+      action: `Lifecycle auto-update from ${oldStatus.toUpperCase()} to ${desired.toUpperCase()} based on operation dates.`,
     });
+  });
 }
