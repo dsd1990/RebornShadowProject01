@@ -185,6 +185,44 @@ Include:
 - Kanban Time Based indication refinement.
 - When a task is in Front Route i think the current flowRules.js may be more properly suited to be only for that section. Open to your ideas. When a package gets to Transmit it falls under a different timeline that requires a person to get the message out to units that require it in a timely fashion so time based alerts may be better for this seciton.
 - Is there a way to have a persistent stopwatch like feature that shows how long a package has been in the Transmit Section and that be visible on the task card while in that section? This would also be logged in the history array.
+- ## Planned Refinement: Front Route overflow + External Review visual separation
+
+### Problem A — Horizontal scrollbar appears inside Front Route section
+**Observed behavior**
+- When browser width is small, the **Front Route section** (QMOW/SWO/ANAV/REO) shows its own horizontal scrollbar.
+- Desired: **no internal section scrolling**. The **entire page** should scroll naturally (vertical page scroll), and the board should reflow responsively instead of creating an inner scroll region.
+
+**Acceptance criteria**
+- No horizontal scrollbar confined to Front Route section at common small widths.
+- If a horizontal scroll is unavoidable, it should be at **page level** (not within the section container).
+- Front Route + External Review should remain usable on smaller widths (responsive layout / wrap / stacking).
+
+**Notes**
+- Preferred solutions may include: responsive wrap, stacking sections, collapsing to 2 columns per row, or moving External Review below on narrow screens.
+- Do not alter workflow/logic—CSS/layout only.
+
+---
+
+### Problem B — External Review looks like the final step of Front Route
+**Observed behavior**
+- External Review floats to the right (good), but the **shared background styling** makes it visually feel like the final Front Route step.
+- Desired: External Review is clearly a **separate “review lane/panel”** (a parallel gate), not the last Front Route column.
+
+**Acceptance criteria**
+- External Review panel remains adjacent/visible (current position is fine), but with clearer separation:
+  - distinct background OR border separation OR spacing gap
+  - independent header styling
+  - optional label/subtitle indicating “Gate / external queue”
+- The Front Route background should NOT visually “connect” into External Review as if it’s a normal column.
+
+**Notes**
+- Visual-only change preferred (CSS, container structure). No changes to statuses or flow rules.
+
+---
+
+### When implementing this refinement
+- Provide 2–3 layout options with screenshots (or clear descriptions) before changing code.
+- Keep changes limited to: `index.html` structure + `css/kanban.css` (and possibly `css/styles.css`), unless explicitly approved.
 
 ---
 
